@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CryptoQuest - Tentang Kami</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="js/storage.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#FFFFFF", "inverse-surface": "#131313", "surface-variant": "#FFF0F3",
+                        "primary-fixed-dim": "#FF85A1", "tertiary-fixed": "#AEE2FF",
+                        "on-background": "#4A4A4A", "surface-container-high": "#FFE1E9",
+                        "inverse-on-surface": "#FFFFFF", "surface-container-low": "#FFF9FA",
+                        "inverse-primary": "#E5738D", "on-primary": "#FFFFFF", "on-secondary": "#FFFFFF",
+                        "surface-container-lowest": "#FFFFFF", "on-primary-container": "#FF4D6D",
+                        "outline-variant": "#FFD1DC", "on-secondary-container": "#00344e",
+                        "secondary": "#AEE2FF", "on-surface": "#4A4A4A", "on-surface-variant": "#8E8E8E",
+                        "surface-bright": "#FFFFFF", "secondary-container": "#AEE2FF",
+                        "primary-container": "#FFD1DC", "surface-container-highest": "#FFB3C1",
+                        "outline": "#FF85A1", "surface-container": "#FFF5F7", "surface-tint": "#FF85A1",
+                        "error": "#FF4D6D", "surface-dim": "#FFF0F3", "on-error": "#FFFFFF",
+                        "primary": "#FF85A1", "tertiary": "#AEE2FF", "background": "#FFF0F3",
+                        "tertiary-container": "#E0F4FF", "on-tertiary": "#FFFFFF",
+                        "error-container": "#FFB3C1", "primary-fixed": "#FFC0CB",
+                    },
+                    borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+                    spacing: { xs: "4px", lg: "48px", margin: "24px", sm: "12px", md: "24px", base: "8px", xl: "80px", gutter: "20px" },
+                    fontFamily: {
+                        "headline-lg": ["Plus Jakarta Sans"], "label-sm": ["Space Grotesk"],
+                        "body-lg": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"],
+                        "code-md": ["Fira Code"], "headline-md": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"],
+                    },
+                    fontSize: {
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-xl": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "code-md": ["14px", {"lineHeight": "1.5", "fontWeight": "450"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient(135deg, #FFF0F3 0%, #E0F4FF 100%); }
+        .material-symbols-outlined { font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24; }
+        .glass-card {
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(16px);
+            border: 2px solid #FFD1DC; transition: all 0.3s ease-in-out;
+        }
+        .glass-card:hover { box-shadow: 0 8px 30px rgba(255,133,161,0.2); border-color: #FF85A1; transform: translateY(-2px); }
+        .neon-glow { text-shadow: 0 0 20px rgba(255,133,161,0.4); }
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); z-index:100; align-items:center; justify-content:center; }
+        .modal-overlay.active { display:flex; }
+        .duo-button { box-shadow: 0 4px 0px #E5738D; transition: all 0.15s; }
+        .duo-button:active { transform: translateY(4px); box-shadow: none; }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .fade-in { animation: fadeInUp 0.6s ease forwards; }
+    </style>
+</head>
+<body class="text-on-background min-h-screen flex flex-col">
+
+<!-- LOGOUT MODAL -->
+<div id="logout-modal" class="modal-overlay">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 text-center space-y-4 shadow-2xl border-2 border-primary-container">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+            <span class="material-symbols-outlined text-red-400 text-3xl">logout</span>
+        </div>
+        <h3 class="text-xl font-black text-gray-700">Keluar dari CryptoQuest?</h3>
+        <p class="text-gray-500 text-sm">Progres kamu tersimpan. Kamu bisa masuk lagi kapan saja.</p>
+        <div class="flex gap-3 pt-2">
+            <button onclick="closeLogoutModal()" class="flex-1 py-3 border-2 border-primary-container text-primary font-bold rounded-2xl hover:bg-surface-container transition-all">Batal</button>
+            <button onclick="confirmLogout()" class="flex-1 py-3 bg-red-400 text-white font-black rounded-2xl duo-button uppercase">Keluar</button>
+        </div>
+    </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profile-modal" class="modal-overlay">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl border-2 border-primary-container space-y-6 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between">
+            <h3 class="text-xl font-black text-gray-700">Profil Agen</h3>
+            <button onclick="closeProfileModal()" class="material-symbols-outlined text-gray-400 hover:text-primary transition-colors">close</button>
+        </div>
+        <div class="flex flex-col items-center gap-3">
+            <div class="w-20 h-20 bg-gradient-to-br from-primary to-tertiary rounded-full flex items-center justify-center shadow-lg">
+                <span class="material-symbols-outlined text-white text-4xl" style="font-variation-settings:'FILL' 1;">account_circle</span>
+            </div>
+            <div id="profile-display-name" class="text-lg font-black text-gray-700"></div>
+            <div id="profile-display-user" class="text-sm text-gray-400 font-mono"></div>
+        </div>
+        <div id="profile-view" class="space-y-3">
+            <div class="bg-surface-container rounded-2xl p-4 space-y-2">
+                <div class="flex justify-between items-center"><span class="text-xs text-gray-400 uppercase tracking-wider">XP Total</span><span id="pv-xp" class="font-black text-primary"></span></div>
+                <div class="flex justify-between items-center"><span class="text-xs text-gray-400 uppercase tracking-wider">Level Selesai</span><span id="pv-levels" class="font-black text-primary"></span></div>
+                <div class="flex justify-between items-center"><span class="text-xs text-gray-400 uppercase tracking-wider">Nyawa</span><span id="pv-hearts" class="font-black text-red-400"></span></div>
+            </div>
+            <button onclick="showEditProfile()" class="w-full py-3 bg-primary text-white font-black rounded-2xl duo-button uppercase tracking-wider">Edit Profil</button>
+            <button onclick="showLogoutModal()" class="w-full py-3 border-2 border-red-200 text-red-400 font-bold rounded-2xl hover:bg-red-50 transition-all uppercase tracking-wider">Keluar</button>
+        </div>
+        <div id="profile-edit" class="hidden space-y-3">
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-primary uppercase tracking-wider">Nama Lengkap</label>
+                <input id="edit-name" type="text" class="w-full px-4 py-3 border-2 border-primary-container rounded-2xl focus:border-primary outline-none transition-all font-semibold"/>
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-primary uppercase tracking-wider">Username</label>
+                <input id="edit-user" type="text" class="w-full px-4 py-3 border-2 border-primary-container rounded-2xl focus:border-primary outline-none transition-all font-semibold"/>
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-tertiary uppercase tracking-wider">Kata Sandi Baru (kosongkan jika tidak diubah)</label>
+                <input id="edit-pass" type="password" placeholder="••••••••" class="w-full px-4 py-3 border-2 border-tertiary-container rounded-2xl focus:border-tertiary outline-none transition-all font-semibold"/>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="hideEditProfile()" class="flex-1 py-3 border-2 border-gray-200 text-gray-500 font-bold rounded-2xl">Batal</button>
+                <button onclick="saveProfileEdit()" class="flex-1 py-3 bg-primary text-white font-black rounded-2xl duo-button uppercase">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TOP APP BAR -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b-2 border-primary-container shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+        <a href="beranda-animasi.html" class="text-xl font-black text-primary-fixed-dim tracking-tighter">CryptoQuest</a>
+        <nav class="hidden md:flex items-center gap-6">
+            <a class="text-on-surface-variant font-semibold hover:text-primary transition-all" href="beranda-animasi.html">Materi</a>
+            <a class="text-on-surface-variant font-semibold hover:text-primary transition-all" href="peta-level.html">Peta Level</a>
+            <a class="text-on-surface-variant font-semibold hover:text-primary transition-all" href="papan-peringkat.html">Papan Peringkat</a>
+            <a class="text-primary border-b-2 border-primary pb-1 font-bold" href="tentang.html">Tentang</a>
+        </nav>
+        <div class="flex items-center gap-3">
+            <button onclick="showProfileModal()" class="flex items-center gap-2 px-3 py-1 rounded-full bg-primary text-white font-bold hover:bg-primary-fixed-dim transition-all shadow-md">
+                <div id="player-avatar-about-container" class="w-7 h-7 rounded-full overflow-hidden border-2 border-white/50 bg-white/20 flex items-center justify-center">
+                    <span id="player-avatar-about" class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1;">account_circle</span>
+                </div>
+                <span id="player-name-about" class="text-xs uppercase tracking-wider">Agen</span>
+            </button>
+            <button onclick="showLogoutModal()" class="flex items-center gap-2 px-3 py-2 rounded-full border-2 border-red-200 text-red-400 font-bold hover:bg-red-50 transition-all text-xs uppercase">
+                <span class="material-symbols-outlined text-[18px]">logout</span>
+                Keluar
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="pt-24 px-6 max-w-4xl mx-auto space-y-12 pb-16 flex-1 w-full">
+    <!-- Hero -->
+    <section class="text-center space-y-4 mt-8 fade-in">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-primary-container bg-white shadow-sm">
+            <span class="material-symbols-outlined text-primary text-[18px]">info</span>
+            <span class="text-xs font-bold text-primary uppercase tracking-widest">Tentang Platform</span>
+        </div>
+        <h1 class="text-5xl md:text-6xl font-black tracking-tight text-primary-fixed-dim neon-glow">CryptoQuest</h1>
+        <p class="text-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
+            Platform pembelajaran kriptografi interaktif yang menggabungkan estetika <em>Kawaii</em> dengan intensitas dunia siber. Belajar dengan cara paling seru!
+        </p>
+    </section>
+
+    <!-- Cards -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6 fade-in">
+        <div class="glass-card p-8 rounded-3xl space-y-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-container to-white flex items-center justify-center border-2 border-primary-container shadow-md">
+                <span class="material-symbols-outlined text-primary text-2xl">school</span>
+            </div>
+            <h3 class="text-2xl font-black text-on-surface">Visi Kami</h3>
+            <p class="text-on-surface-variant leading-relaxed">
+                Menjadikan pembelajaran keamanan digital dan kriptografi menyenangkan, mudah dipahami oleh pelajar serta antusias teknologi melalui pendekatan gamifikasi.
+            </p>
+        </div>
+        <div class="glass-card p-8 rounded-3xl space-y-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-tertiary-container to-white flex items-center justify-center border-2 border-tertiary-container shadow-md">
+                <span class="material-symbols-outlined text-tertiary text-2xl" style="color:#72DDF7">sports_esports</span>
+            </div>
+            <h3 class="text-2xl font-black text-on-surface">Pendekatan Gamifikasi</h3>
+            <p class="text-on-surface-variant leading-relaxed">
+                Daripada membaca buku teks, CryptoQuest mengajak Anda untuk "meretas" secara langsung. Buka level baru, kumpulkan maskot, dan naiki papan peringkat!
+            </p>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="glass-card p-8 rounded-3xl space-y-6 fade-in">
+        <h2 class="flex items-center gap-2 text-3xl font-black text-primary">
+            <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1;">star</span>
+            Fitur Utama
+        </h2>
+        <div class="space-y-5">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 shrink-0 rounded-2xl bg-primary-container/50 flex items-center justify-center border-2 border-primary-container mt-1">
+                    <span class="material-symbols-outlined text-primary">lock_open</span>
+                </div>
+                <div>
+                    <h4 class="text-lg font-black text-on-surface mb-1">Misi Enkripsi & Dekripsi</h4>
+                    <p class="text-on-surface-variant">Pelajari algoritma klasik Caesar Cipher hingga RSA melalui misi interaktif dengan timer dan sistem nyawa.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 shrink-0 rounded-2xl bg-tertiary-container/50 flex items-center justify-center border-2 border-tertiary-container mt-1">
+                    <span class="material-symbols-outlined" style="color:#72DDF7">pets</span>
+                </div>
+                <div>
+                    <h4 class="text-lg font-black text-on-surface mb-1">Koleksi Maskot (CyberCompanions)</h4>
+                    <p class="text-on-surface-variant">Ditemani maskot digital seperti CyberCat dan CryptoNinja. Buka kunci maskot baru dengan menyelesaikan level!</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 shrink-0 rounded-2xl bg-primary-container/50 flex items-center justify-center border-2 border-primary-container mt-1">
+                    <span class="material-symbols-outlined text-primary">leaderboard</span>
+                </div>
+                <div>
+                    <h4 class="text-lg font-black text-on-surface mb-1">Papan Peringkat Kompetitif</h4>
+                    <p class="text-on-surface-variant">Buktikan keahlian kriptografi dan bersainglah dengan agen lain di seluruh dunia. Pantau progres dan riwayatmu!</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 shrink-0 rounded-2xl bg-tertiary-container/50 flex items-center justify-center border-2 border-tertiary-container mt-1">
+                    <span class="material-symbols-outlined" style="color:#72DDF7">trending_up</span>
+                </div>
+                <div>
+                    <h4 class="text-lg font-black text-on-surface mb-1">Riwayat & Progress Perjalanan</h4>
+                    <p class="text-on-surface-variant">Pantau setiap langkah perjalananmu — level apa saja yang sudah dikerjakan, skor terbaik, dan pencapaianmu.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="text-center fade-in">
+        <a href="peta-level.html" class="inline-block px-10 py-4 rounded-2xl bg-primary text-white font-black uppercase tracking-widest hover:scale-105 transition-transform shadow-lg shadow-primary/30 duo-button text-lg">
+            <span class="material-symbols-outlined mr-2">rocket_launch</span> Mulai Petualangan
+        </a>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant/30 py-xl mt-auto relative z-10">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center px-margin gap-md">
+        <div class="flex flex-col items-center md:items-start gap-xs">
+            <span class="text-headline-sm font-headline-sm text-primary">CryptoQuest</span>
+            <p class="font-body-md text-body-md text-on-surface-variant opacity-80">© 2026 CryptoQuest. Belajar Kriptografi dengan Seru.</p>
+        </div>
+        <div class="flex gap-md">
+            <a class="text-on-surface-variant hover:text-tertiary transition-colors font-label-sm text-label-sm uppercase tracking-wider" href="#">Kebijakan Privasi</a>
+            <a class="text-on-surface-variant hover:text-tertiary transition-colors font-label-sm text-label-sm uppercase tracking-wider" href="#">Syarat Layanan</a>
+            <a class="text-on-surface-variant hover:text-tertiary transition-colors font-label-sm text-label-sm uppercase tracking-wider" href="#">Bantuan</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const data = GameStorage.load();
+        if (!GameStorage.hasAnyAccount()) { window.location.href = 'login.html?mode=register'; return; }
+        if (!GameStorage.isLoggedIn()) { window.location.href = 'login.html'; return; }
+        document.getElementById('player-name-about').textContent = data.playerName || 'Agen';
+        const activeChar = GameStorage.getActiveCharacter();
+        const container = document.getElementById('player-avatar-about-container');
+        if (container) container.innerHTML = `<img src="${activeChar.img}" class="w-full h-full object-cover">`;
+    });
+
+    function showLogoutModal() {
+        document.getElementById('profile-modal').classList.remove('active');
+        document.getElementById('logout-modal').classList.add('active');
+    }
+    function closeLogoutModal() { document.getElementById('logout-modal').classList.remove('active'); }
+    function confirmLogout() {
+        let data = GameStorage.load();
+        GameStorage.logout();
+        window.location.href = 'login.html';
+    }
+
+    function showProfileModal() {
+        const data = GameStorage.load();
+        document.getElementById('profile-display-name').textContent = data.playerName || '-';
+        document.getElementById('profile-display-user').textContent = '@' + (data.username || '-');
+        document.getElementById('pv-xp').textContent = (data.xp || 0) + ' XP';
+        document.getElementById('pv-levels').textContent = (data.completedLevels || []).length + ' / 8 Level';
+        document.getElementById('pv-hearts').textContent = (data.hearts ?? 5) + ' Nyawa';
+        document.getElementById('profile-view').classList.remove('hidden');
+        document.getElementById('profile-edit').classList.add('hidden');
+        document.getElementById('profile-modal').classList.add('active');
+    }
+    function closeProfileModal() { document.getElementById('profile-modal').classList.remove('active'); }
+    function showEditProfile() {
+        const data = GameStorage.load();
+        document.getElementById('edit-name').value = data.playerName || '';
+        document.getElementById('edit-user').value = data.username || '';
+        document.getElementById('edit-pass').value = '';
+        document.getElementById('profile-view').classList.add('hidden');
+        document.getElementById('profile-edit').classList.remove('hidden');
+    }
+    function hideEditProfile() {
+        document.getElementById('profile-view').classList.remove('hidden');
+        document.getElementById('profile-edit').classList.add('hidden');
+    }
+    function saveProfileEdit() {
+        const name = document.getElementById('edit-name').value.trim();
+        const user = document.getElementById('edit-user').value.trim();
+        const pass = document.getElementById('edit-pass').value;
+        if (!name || !user) { showToast('Nama dan username tidak boleh kosong!', 'error'); return; }
+        let data = GameStorage.load();
+        data.playerName = name;
+        data.username = user;
+        if (pass) data.password = pass;
+        GameStorage.save(data);
+        document.getElementById('player-name-about').textContent = name;
+        document.getElementById('profile-display-name').textContent = name;
+        document.getElementById('profile-display-user').textContent = '@' + user;
+        hideEditProfile();
+        showToast('Profil berhasil diperbarui.', 'success');
+    }
+
+    function showToast(msg, type='success') {
+        const toast = document.createElement('div');
+        const bg = type === 'success' ? 'bg-green-400' : 'bg-red-400';
+        toast.className = `fixed top-24 left-1/2 -translate-x-1/2 z-[200] ${bg} text-white font-bold px-6 py-3 rounded-2xl shadow-xl text-sm transition-all`;
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    document.getElementById('logout-modal').addEventListener('click', function(e) { if(e.target===this) closeLogoutModal(); });
+    document.getElementById('profile-modal').addEventListener('click', function(e) { if(e.target===this) closeProfileModal(); });
+</script>
+</body>
+</html>

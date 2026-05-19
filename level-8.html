@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CryptoQuest - Level 8: Cryptanalysis Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/storage.js"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%); min-height: 100vh; color: #FFFFFF; }
+        .glass-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(16px); border: 2px solid rgba(255,133,161,0.2); border-radius: 1.5rem; }
+    </style>
+</head>
+<body class="bg-background">
+    <header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 py-4 bg-black/40 backdrop-blur-md border-b-2 border-pink-500/20 shadow-sm max-w-7xl mx-auto">
+        <div class="flex items-center gap-4">
+            <button onclick="window.location.href='peta-level.html'" class="w-10 h-10 rounded-xl bg-pink-500/10 border-2 border-pink-500/20 flex items-center justify-center text-pink-400 hover:bg-pink-500/20 transition-all">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <div class="text-xl font-black text-pink-400 tracking-tighter">CryptoQuest</div>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="window.location.href='profil.html'" class="flex items-center gap-2 px-4 py-2 rounded-2xl bg-pink-500 text-white font-bold hover:bg-pink-600 transition-all shadow-lg shadow-pink-500/20">
+                <span id="player-avatar-lvl" class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+                <span id="player-name-lvl" class="text-label-sm font-label-sm uppercase">Agen</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="pt-32 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <section class="lg:col-span-12 mb-8">
+            <div class="flex items-end gap-6 text-center lg:text-left flex-col lg:flex-row">
+                <div class="space-y-2">
+                    <span class="text-pink-400 font-bold tracking-widest uppercase text-xs">Misi Terakhir</span>
+                    <h1 class="text-4xl md:text-6xl font-black text-white drop-shadow-[0_0_15px_rgba(255,133,161,0.5)]">Level 8: Cryptanalysis</h1>
+                    <p class="text-lg text-gray-400 font-medium italic">"Gunakan insting dan alat analisis, bukan kunci."</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="lg:col-span-12">
+            <div class="glass-card p-10 space-y-8 text-center max-w-3xl mx-auto border-pink-500/30">
+                <div class="w-20 h-20 bg-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-pink-500/40">
+                    <span class="material-symbols-outlined text-pink-400 text-4xl">search</span>
+                </div>
+                <h3 class="text-3xl font-black text-white">Tantangan Kriptanalis Master</h3>
+                <p class="text-gray-300 leading-relaxed text-lg">
+                    Selamat, Agen! Kamu telah mencapai puncak pelatihan. Di misi ini, musuh tidak meninggalkan kunci. Kamu harus memecahkan sandi Caesar dengan menganalisis frekuensi huruf yang muncul.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                    <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                        <p class="font-bold text-pink-400 flex items-center gap-2 mb-2">
+                            <span class="material-symbols-outlined text-sm">analytics</span> Analisis Frekuensi
+                        </p>
+                        <p class="text-xs text-gray-400 leading-relaxed">Gunakan grafik batang di panel game untuk melihat huruf mana yang paling sering muncul.</p>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                        <p class="font-bold text-blue-400 flex items-center gap-2 mb-2">
+                            <span class="material-symbols-outlined text-sm">lightbulb</span> Pola Bahasa
+                        </p>
+                        <p class="text-xs text-gray-400 leading-relaxed">Dalam Bahasa Indonesia, huruf seperti **A, E,** dan **I** biasanya memiliki frekuensi tertinggi.</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center gap-4 pt-6">
+                    <button onclick="window.location.href='cipher_breaker_game.html?level=cryptanalysis'" class="w-full md:w-auto px-12 py-5 bg-pink-500 text-white font-black rounded-2xl uppercase tracking-widest hover:scale-105 hover:bg-pink-600 transition-all shadow-2xl shadow-pink-500/40">
+                        MASUK KE MISI FINAL
+                    </button>
+                    <p class="text-[10px] text-gray-500 uppercase font-bold tracking-tighter">⚠️ Tidak ada petunjuk kunci. Gunakan instingmu!</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!GameStorage.isLoggedIn()) {
+                window.location.href = 'login.html';
+            } else {
+                const data = GameStorage.load();
+                document.getElementById('player-name-lvl').textContent = data.playerName;
+            }
+        });
+    </script>
+</body>
+</html>
