@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GhostMark — Hidden Message Steganography</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #010204;
+      --surface-glass: rgba(10, 14, 22, 0.55);
+      --surface-input: rgba(3, 5, 8, 0.7);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(0, 240, 255, 0.3);
+      
+      --accent-cyan: #00F0FF;
+      --accent-magenta: #FF0055;
+      --accent-teal: #1F8A70;
+      --danger: #FF3366;
+      
+      --text: #F0F2F5;
+      --muted: #828B9E;
+      
+      --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.15);
+      --glow-magenta: 0 0 20px rgba(255, 0, 85, 0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      background-image: url("{{ url_for('static', filename='assets/images/hero-bg.jpg') }}");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.05), transparent 60%), rgba(0, 0, 0, 0.7);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        url("{{ url_for('static', filename='assets/images/noise.jpg') }}"),
+        linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+      background-size: cover, 40px 40px, 40px 40px;
+      background-position: center, 0, 0;
+      background-repeat: no-repeat, repeat, repeat;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 840px; 
+      margin: 0 auto;
+      padding: 0 24px;
+      flex: 1 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 80px 0 56px;
+      text-align: center;
+      animation: ghostFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .logo-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.15), 0 0 15px rgba(0, 240, 255, 0.1);
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+    
+    .logo:hover .logo-icon {
+      border-color: var(--accent-cyan);
+      box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.3), var(--glow-cyan);
+      transform: scale(1.05) rotate(-2deg);
+    }
+
+    .logo-icon img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .upload-icon img { width: 48px; height: 48px; opacity: 1; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 0 8px rgba(0,240,255,0.4)); }
+    .upload-zone:hover .upload-icon img { transform: translateY(-8px) scale(1.1); filter: drop-shadow(0 0 12px rgba(0,240,255,0.8)); }
+    
+    .key-toggle img { width: 20px; opacity: 0.5; transition: all 0.3s ease; }
+    .key-toggle:hover img { opacity: 1; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
+
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #fff;
+      text-transform: uppercase;
+      text-shadow: 
+        4px 0 10px rgba(255, 0, 85, 0.8),
+        -4px 0 10px rgba(0, 240, 255, 0.8),
+        0 0 15px rgba(255, 255, 255, 0.3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: default;
+    }
+
+    .logo-text:hover {
+      text-shadow: 
+        8px 0 15px rgba(255, 0, 85, 1),
+        -8px 0 15px rgba(0, 240, 255, 1),
+        0 0 25px rgba(255, 255, 255, 0.6);
+      letter-spacing: 4px;
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      font-family: 'Space Mono', monospace;
+      font-weight: 400;
+      opacity: 0.9;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--surface-glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
+      margin: 0 auto 48px;
+      width: fit-content;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+      animation: ghostFadeIn 0.8s 0.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      opacity: 0;
+    }
+
+    .tab-btn {
+      padding: 14px 40px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.02); }
+
+    .tab-btn.active {
+      background: rgba(0, 240, 255, 0.05);
+      color: #fff;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.1);
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+    }
+
+    .panel {
+      display: none;
+      animation: panelFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .panel.active { display: block; }
+
+    @keyframes panelFadeIn {
+      0% { opacity: 0; transform: translateY(20px) scale(0.98); filter: blur(5px); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes ghostFadeIn {
+      0% { opacity: 0; transform: translateY(15px); filter: blur(4px); }
+      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+    .card {
+      background: var(--surface-glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px;
+      margin-bottom: 24px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .card:hover { 
+      border-color: rgba(0, 240, 255, 0.15); 
+      box-shadow: 0 30px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.1), var(--glow-cyan);
+      transform: translateY(-2px);
+    }
+    
+    .card:hover::before { opacity: 1; }
+
+    .card-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .card-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0, 240, 255, 0.2), transparent);
+    }
+
+    .upload-zone {
+      border: 1px dashed rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.3);
+      border-radius: 16px;
+      padding: 64px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .upload-zone::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(0, 240, 255, 0.08), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: rgba(0, 240, 255, 0.5);
+      background: rgba(0, 240, 255, 0.02);
+      box-shadow: inset 0 0 30px rgba(0, 240, 255, 0.05);
+    }
+
+    .upload-zone:hover::before, .upload-zone.dragover::before {
+      opacity: 1;
+    }
+
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .upload-icon { 
+      margin-bottom: 20px; 
+      position: relative;
+      z-index: 1;
+    }
+
+    .upload-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+      transition: color 0.3s ease;
+    }
+    
+    .upload-zone:hover .upload-label { color: #fff; text-shadow: 0 0 8px rgba(0,240,255,0.4); }
+
+    .upload-hint { 
+      font-size: 12px; 
+      color: var(--muted); 
+      letter-spacing: 0.5px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .preview-wrap {
+      display: none;
+      margin-top: 24px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      position: relative;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+      animation: ghostFadeIn 0.5s ease;
+    }
+
+    .preview-wrap img {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      display: block;
+      filter: contrast(1.1) brightness(0.9);
+      transition: all 0.5s ease;
+    }
+    
+    .preview-wrap:hover img { filter: contrast(1.1) brightness(1); transform: scale(1.02); }
+
+    .preview-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      color: var(--accent-cyan);
+      font-size: 10px;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 2px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .preview-remove {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 51, 102, 0.3);
+      color: var(--danger);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .preview-remove:hover { 
+      background: var(--danger);
+      color: #fff;
+      border-color: var(--danger);
+      box-shadow: 0 0 20px rgba(255, 51, 102, 0.5);
+      transform: scale(1.1);
+    }
+
+    .field { margin-bottom: 28px; }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      transition: color 0.3s ease;
+    }
+    
+    .field:focus-within label { color: var(--accent-cyan); text-shadow: 0 0 5px rgba(0,240,255,0.3); }
+
+    .field textarea,
+    .field input[type="text"],
+    .field input[type="password"] {
+      width: 100%;
+      background: var(--surface-input);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      resize: vertical;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+    .field textarea::placeholder,
+    .field input::placeholder {
+      color: #4A5568;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .field textarea:focus,
+    .field input:focus {
+      border-color: rgba(0, 240, 255, 0.5);
+      background: rgba(5, 7, 12, 0.9);
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 0 2px rgba(0, 240, 255, 0.1), var(--glow-cyan);
+    }
+
+    .field textarea { min-height: 140px; line-height: 1.7; }
+
+    .key-wrap { position: relative; }
+    .key-wrap input { padding-right: 60px; letter-spacing: 2px; }
+    .key-wrap input[type="password"] { font-family: 'Syne', sans-serif; font-size: 18px; letter-spacing: 4px; }
+    .key-toggle {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .key-toggle:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+
+    .btn {
+      width: 100%;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .btn:hover::before { transform: translateX(100%); }
+
+    .btn-primary {
+      border-color: rgba(0, 240, 255, 0.4);
+      background: rgba(0, 240, 255, 0.05);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 240, 255, 0.05);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 240, 255, 0.12);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 20px rgba(0, 240, 255, 0.2), var(--glow-cyan);
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:active { transform: translateY(1px); box-shadow: 0 2px 10px rgba(0,0,0,0.6); }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      border-color: var(--border);
+      box-shadow: none;
+      background: rgba(0,0,0,0.3);
+      text-shadow: none;
+      transform: none;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.15);
+      border-top-color: var(--accent-cyan);
+      border-radius: 50%;
+      animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .alert {
+      display: none;
+      padding: 18px 24px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-family: 'Space Mono', monospace;
+      margin-top: 24px;
+      animation: ghostFadeIn 0.4s ease;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(10px);
+    }
+
+    .alert-error {
+      background: rgba(255, 51, 102, 0.08);
+      border: 1px solid rgba(255, 51, 102, 0.4);
+      color: #FF6688;
+      box-shadow: inset 0 0 15px rgba(255, 51, 102, 0.1);
+      text-shadow: 0 0 5px rgba(255, 51, 102, 0.3);
+    }
+
+    .alert-success {
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      color: var(--accent-cyan);
+      box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.1);
+      text-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+    }
+
+    .result-box {
+      display: none;
+      margin-top: 28px;
+      background: rgba(5, 7, 12, 0.8);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      border-radius: 12px;
+      padding: 32px;
+      animation: ghostFadeIn 0.5s ease;
+      position: relative;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 240, 255, 0.05);
+    }
+    
+    .result-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 4px; height: 100%;
+      background: var(--accent-cyan);
+      border-radius: 12px 0 0 12px;
+      box-shadow: var(--glow-cyan);
+    }
+
+    .result-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .result-label::before { content: '>'; color: #fff; }
+
+    .result-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 16px;
+      line-height: 1.8;
+      color: #fff;
+      word-break: break-word;
+      text-shadow: 0 0 4px rgba(255,255,255,0.2);
+      padding: 16px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .result-copy {
+      margin-top: 24px;
+      padding: 12px 28px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--text);
+      border-radius: 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .result-copy:hover { 
+      background: rgba(255,255,255,0.1); 
+      border-color: rgba(255,255,255,0.4);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .download-success {
+      display: none;
+      margin-top: 28px;
+      padding: 32px;
+      background: rgba(0, 240, 255, 0.05);
+      border: 1px dashed rgba(0, 240, 255, 0.4);
+      border-radius: 12px;
+      text-align: center;
+      animation: ghostFadeIn 0.5s ease;
+      box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.05);
+    }
+
+    .download-icon { font-size: 32px; margin-bottom: 16px; filter: grayscale(100%) drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
+
+    .download-success p {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 8px rgba(0,240,255,0.4);
+    }
+
+    .download-success span {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .how-section { margin-top: 80px; padding-bottom: 100px; animation: ghostFadeIn 1s 0.2s forwards; opacity: 0; }
+
+    .how-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .how-title::before, .how-title::after {
+      content: '';
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-highlight), transparent);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .step {
+      background: rgba(10, 14, 20, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 24px;
+      text-align: center;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .step::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.3), transparent);
+      opacity: 0.5;
+      transition: opacity 0.5s ease;
+    }
+
+    .step:hover { 
+      background: rgba(15, 20, 30, 0.8);
+      transform: translateY(-8px);
+      border-color: rgba(0, 240, 255, 0.2);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(0, 240, 255, 0.05);
+    }
+    
+    .step:hover::before { opacity: 1; }
+
+    .step-num {
+      width: 48px;
+      height: 48px;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      margin: 0 auto 24px;
+      box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.1), 0 0 10px rgba(0, 240, 255, 0.1);
+      text-shadow: 0 0 5px rgba(0,240,255,0.5);
+      transition: all 0.4s ease;
+    }
+    
+    .step:hover .step-num {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.3), 0 0 15px rgba(0, 240, 255, 0.2);
+    }
+
+    .step h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      color: #fff;
+      transition: text-shadow 0.3s ease;
+    }
+    
+    .step:hover h4 { text-shadow: 0 0 8px rgba(255,255,255,0.4); }
+
+    .step p { 
+      font-size: 13px; 
+      color: var(--muted); 
+      line-height: 1.8; 
+    }
+
+    .site-footer {
+      background-image: url('/assets/images/noise-pattern.jpg');
+      background-size: 140px 140px;
+      background-position: 0 0;
+      background-repeat: repeat;
+      background-attachment: scroll;
+      background-color: rgba(0, 0, 0, 0.7);
+      background-blend-mode: multiply;
+      padding: 60px 24px;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      position: relative;
+      z-index: 2;
+      overflow: hidden;
+      min-height: 100px;
+      flex-shrink: 0;
+      margin-top: auto;
+    }
+    
+    .site-footer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2), transparent);
+    }
+
+    .site-footer .ghost-left {
+      position: absolute;
+      left: 20px;
+      bottom: -10px;
+      font-size: 64px;
+      opacity: 0.15;
+      z-index: 1;
+      pointer-events: none;
+      line-height: 1;
+      letter-spacing: -10px;
+      filter: drop-shadow(0 0 10px rgba(0,240,255,0.2));
+      transition: all 1s ease;
+    }
+
+    .site-footer .ghost-right {
+      position: absolute;
+      right: 20px;
+      bottom: -10px;
+      font-size: 64px;
+      opacity: 0.15;
+      z-index: 1;
+      pointer-events: none;
+      line-height: 1;
+      letter-spacing: -10px;
+      text-align: right;
+      filter: drop-shadow(0 0 10px rgba(255,0,85,0.2));
+      transition: all 1s ease;
+    }
+    
+    .site-footer:hover .ghost-left { transform: translateY(-5px); opacity: 0.3; }
+    .site-footer:hover .ghost-right { transform: translateY(-5px); opacity: 0.3; }
+
+    .site-footer p {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      letter-spacing: 2px;
+      position: relative;
+      z-index: 2;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 768px) {
+      .steps { grid-template-columns: 1fr; }
+      .tabs { width: 100%; border-radius: 12px; flex-direction: column; }
+      .tab-btn { width: 100%; padding: 16px; border-radius: 8px; }
+      .card { padding: 32px 24px; border-radius: 16px; }
+      .logo-text { font-size: 32px; }
+      header { padding: 60px 0 40px; }
+      .site-footer .ghost-left, .site-footer .ghost-right { font-size: 48px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo">
+      <div class="logo-icon"><img src="{{ url_for('static', filename='assets/images/ghost.jpg') }}" alt="Ghost Logo"></div>
+      <div class="logo-text">GhostMark</div>
+    </div>
+    <p class="tagline">Image Steganography &amp; AES Encryption</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('encode', this)">🔒 Hide Message</button>
+    <button class="tab-btn" onclick="switchTab('decode', this)">🔓 Reveal Message</button>
+  </div>
+
+  <div class="panel active" id="panel-encode">
+    <div class="card">
+      <div class="card-title">01 — Upload Image</div>
+      <div class="upload-zone" id="encode-drop" ondragover="handleDrag(event, 'encode-drop')" ondragleave="handleDragLeave('encode-drop')" ondrop="handleDrop(event, 'encode-img', 'encode-preview')">
+        <input type="file" id="encode-img" accept=".png,.jpg,.jpeg" onchange="previewImage(this, 'encode-preview')"/>
+        <div class="upload-icon"><img src="{{ url_for('static', filename='assets/images/upload.png') }}" alt="Upload"></div>
+        <div class="upload-label">Drag &amp; drop atau klik untuk pilih gambar</div>
+        <div class="upload-hint">Format: PNG, JPG, JPEG · Maks. 10MB</div>
+      </div>
+      <div class="preview-wrap" id="encode-preview">
+        <img id="encode-preview-img" src="" alt="Preview"/>
+        <div class="preview-badge">Image Loaded</div>
+        <div class="preview-remove" onclick="removeImage('encode-img', 'encode-preview')">✕</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">02 — Secret Message &amp; Key</div>
+      <div class="field">
+        <label>Pesan Rahasia</label>
+        <textarea id="encode-message" placeholder="Ketik pesan rahasia yang ingin disembunyikan..."></textarea>
+      </div>
+      <div class="field">
+        <label>Encryption Key</label>
+        <div class="key-wrap">
+          <input type="password" id="encode-key" placeholder="Masukkan key enkripsi..."/>
+          <button class="key-toggle" onclick="toggleKey('encode-key', this)">
+            <img src="static/assets/icons/eye.svg" alt="Show/Hide">
+          </button>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-encode" onclick="encodeImage()">
+        🔒 Sembunyikan Pesan
+      </button>
+      <div class="alert alert-error" id="encode-error"></div>
+      <div class="download-success" id="encode-success">
+        <div class="download-icon">✅</div>
+        <p>Gambar berhasil diproses!</p>
+        <span>File ghostmark_encoded.png telah diunduh</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-decode">
+    <div class="card">
+      <div class="card-title">01 — Upload Encoded Image</div>
+      <div class="upload-zone" id="decode-drop" ondragover="handleDrag(event, 'decode-drop')" ondragleave="handleDragLeave('decode-drop')" ondrop="handleDrop(event, 'decode-img', 'decode-preview')">
+        <input type="file" id="decode-img" accept=".png,.jpg,.jpeg" onchange="previewImage(this, 'decode-preview')"/>
+        <div class="upload-icon"><img src="{{ url_for('static', filename='assets/images/search.png') }}" alt="Search"></div>
+        <div class="upload-label">Upload gambar yang mengandung pesan tersembunyi</div>
+        <div class="upload-hint">Format: PNG, JPG, JPEG · Maks. 10MB</div>
+      </div>
+      <div class="preview-wrap" id="decode-preview">
+        <img id="decode-preview-img" src="" alt="Preview"/>
+        <div class="preview-badge">Image Loaded</div>
+        <div class="preview-remove" onclick="removeImage('decode-img', 'decode-preview')">✕</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">02 — Masukkan Key</div>
+      <div class="field">
+        <label>Decryption Key</label>
+        <div class="key-wrap">
+          <input type="password" id="decode-key" placeholder="Masukkan key yang sama saat encode..."/>
+          <button class="key-toggle" onclick="toggleKey('decode-key', this)">
+            <img src="{{ url_for('static', filename='assets/icons/eye.svg') }}" alt="Show/Hide">
+          </button>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-decode" onclick="decodeImage()">
+        🔓 Ungkap Pesan
+      </button>
+      <div class="alert alert-error" id="decode-error"></div>
+      <div class="result-box" id="decode-result">
+        <div class="result-label">// Pesan Ditemukan</div>
+        <div class="result-text" id="decode-result-text"></div>
+        <button class="result-copy" onclick="copyResult()">📋 Salin Pesan</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="how-section">
+    <div class="how-title">// Cara Kerja GhostMark</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4>Enkripsi AES</h4>
+        <p>Pesan dienkripsi dengan algoritma AES-CBC menggunakan key yang kamu tentukan</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4>Steganografi DCT</h4>
+        <p>Ciphertext disisipkan ke koefisien DCT setiap blok gambar, tak terlihat oleh mata</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4>Double Security</h4>
+        <p>Hanya pemilik key yang bisa mengekstrak dan membaca pesan asli dari gambar</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <span class="ghost-left">👻 👻</span>
+  <p>&copy; 2026 GhostMark Steganography. All Rights Reserved.</p>
+  <span class="ghost-right">👻 👻</span>
+</footer>
+
+<script>
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + name).classList.add('active');
+  }
+
+  function previewImage(input, previewId) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const wrap = document.getElementById(previewId);
+      const img = document.getElementById(previewId + '-img');
+      img.src = e.target.result;
+      wrap.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeImage(inputId, previewId) {
+    document.getElementById(inputId).value = '';
+    document.getElementById(previewId).style.display = 'none';
+  }
+
+  function handleDrag(e, zoneId) {
+    e.preventDefault();
+    document.getElementById(zoneId).classList.add('dragover');
+  }
+
+  function handleDragLeave(zoneId) {
+    document.getElementById(zoneId).classList.remove('dragover');
+  }
+
+  function handleDrop(e, inputId, previewId) {
+    e.preventDefault();
+    const zoneId = e.currentTarget.id;
+    document.getElementById(zoneId).classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+    const input = document.getElementById(inputId);
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    input.files = dt.files;
+    previewImage(input, previewId);
+  }
+
+  function toggleKey(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') {
+      input.type = 'text';
+    } else {
+      input.type = 'password';
+    }
+  }
+
+  function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = '⚠ ' + msg;
+    el.style.display = 'block';
+  }
+
+  function hideAlert(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  async function encodeImage() {
+    hideAlert('encode-error');
+    document.getElementById('encode-success').style.display = 'none';
+
+    const imageInput = document.getElementById('encode-img');
+    const message = document.getElementById('encode-message').value.trim();
+    const key = document.getElementById('encode-key').value.trim();
+
+    if (!imageInput.files || !imageInput.files[0]) return showError('encode-error', 'Pilih gambar terlebih dahulu.');
+    if (!message) return showError('encode-error', 'Pesan tidak boleh kosong.');
+    if (!key) return showError('encode-error', 'Key tidak boleh kosong.');
+
+    const btn = document.getElementById('btn-encode');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Memproses...';
+
+    const formData = new FormData();
+    formData.append('image', imageInput.files[0]);
+    formData.append('message', message);
+    formData.append('key', key);
+
+    try {
+      const res = await fetch('/encode', { method: 'POST', body: formData });
+
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'ghostmark_encoded.png';
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById('encode-success').style.display = 'block';
+      } else {
+        const data = await res.json();
+        showError('encode-error', data.error || 'Terjadi kesalahan.');
+      }
+    } catch (err) {
+      showError('encode-error', 'Tidak dapat terhubung ke server.');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '🔒 Sembunyikan Pesan';
+  }
+
+  async function decodeImage() {
+    hideAlert('decode-error');
+    document.getElementById('decode-result').style.display = 'none';
+
+    const imageInput = document.getElementById('decode-img');
+    const key = document.getElementById('decode-key').value.trim();
+
+    if (!imageInput.files || !imageInput.files[0]) return showError('decode-error', 'Pilih gambar terlebih dahulu.');
+    if (!key) return showError('decode-error', 'Key tidak boleh kosong.');
+
+    const btn = document.getElementById('btn-decode');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Menganalisis...';
+
+    const formData = new FormData();
+    formData.append('image', imageInput.files[0]);
+    formData.append('key', key);
+
+    try {
+      const res = await fetch('/decode', { method: 'POST', body: formData });
+      const data = await res.json();
+
+      if (res.ok) {
+        document.getElementById('decode-result-text').textContent = data.message;
+        document.getElementById('decode-result').style.display = 'block';
+      } else {
+        showError('decode-error', data.error || 'Terjadi kesalahan.');
+      }
+    } catch (err) {
+      showError('decode-error', 'Tidak dapat terhubung ke server.');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '🔓 Ungkap Pesan';
+  }
+
+  function copyResult() {
+    const text = document.getElementById('decode-result-text').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.result-copy');
+      btn.textContent = '✅ Tersalin!';
+      setTimeout(() => btn.textContent = '📋 Salin Pesan', 2000);
+    });
+  }
+</script>
+</body>
+</html>
