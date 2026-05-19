@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Chat - Ruang Obrolan</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <!-- Socket.IO -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.1/socket.io.js"></script>
+</head>
+<body>
+    <div class="wa-container" id="chat-panel">
+        <!-- Sidebar Kiri -->
+        <div class="wa-sidebar">
+            <div class="wa-header">
+                <div class="user-info">
+                    <i data-feather="user" style="color: var(--color-primary); margin-right: 8px;"></i>
+                    <span id="current-username" style="font-weight: 600;">{{ username }}</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="status-box">
+                    <h3>Status Koneksi</h3>
+                    <div class="badge" id="conn-status">E2E Inactive</div>
+                </div>
+
+                <div class="crypto-panel">
+                    <h3><i data-feather="lock" style="width: 14px; height:14px;"></i> Log Enkripsi</h3>
+                    <div id="crypto-logs" class="crypto-logs">
+                        <div class="log-entry">Menunggu koneksi...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Utama Kanan -->
+        <div class="wa-main">
+            <div class="wa-header">
+                <div class="chat-title">
+                    <i data-feather="message-circle" style="margin-right: 8px;"></i>
+                    <span>Global Secure Chat</span>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="messages-area">
+                <div class="system-message">Selamat datang di Obrolan E2E Kriptografi</div>
+            </div>
+
+            <form class="chat-input-area" id="chat-form" onsubmit="sendMessage(event)">
+                <input type="text" id="message-input" placeholder="Ketik pesan..." autocomplete="off" disabled>
+                <button type="submit" id="send-btn" disabled>
+                    <i data-feather="send"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+    </script>
+    
+    <script type="module">
+        import { animate } from 'https://cdn.jsdelivr.net/npm/animejs@4.4.1/+esm';
+        window.animate = animate;
+
+        // Animasi masuk panel chat
+        animate('#chat-panel', {
+            opacity: [0, 1],
+            scale: [0.98, 1],
+            duration: 800,
+            ease: 'outCubic'
+        });
+    </script>
+    
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
