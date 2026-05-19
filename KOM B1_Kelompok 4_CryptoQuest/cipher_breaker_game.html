@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CryptoQuest - Cipher Breaker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500&amp;family=Fira+Code:wght@400;450&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "surface": "#FFFFFF",
+                "inverse-surface": "#131313",
+                "surface-variant": "#FFF0F3",
+                "primary-fixed-dim": "#FF85A1",
+                "tertiary-fixed": "#72DDF7",
+                "on-secondary-fixed": "#001e2f",
+                "on-background": "#4A4A4A",
+                "surface-container-high": "#FFE1E9",
+                "on-tertiary-fixed": "#001f26",
+                "inverse-on-surface": "#FFFFFF",
+                "surface-container-low": "#FFF9FA",
+                "inverse-primary": "#E5738D",
+                "on-error-container": "#ffdad6",
+                "on-primary": "#FFFFFF",
+                "on-secondary": "#FFFFFF",
+                "surface-container-lowest": "#FFFFFF",
+                "on-primary-container": "#FF4D6D",
+                "outline-variant": "#FFD1DC",
+                "on-secondary-container": "#00344e",
+                "secondary-fixed": "#72DDF7",
+                "on-tertiary-container": "#005868",
+                "secondary": "#72DDF7",
+                "on-surface": "#4A4A4A",
+                "on-surface-variant": "#8E8E8E",
+                "surface-bright": "#FFFFFF",
+                "on-secondary-fixed-variant": "#004c6e",
+                "secondary-container": "#AEE2FF",
+                "primary-container": "#FFD1DC",
+                "surface-container-highest": "#FFB3C1",
+                "outline": "#FF85A1",
+                "surface-container": "#FFF5F7",
+                "surface-tint": "#FF85A1",
+                "error": "#FF4D6D",
+                "on-primary-fixed-variant": "#80001C",
+                "secondary-fixed-dim": "#72DDF7",
+                "on-tertiary-fixed-variant": "#004e5c",
+                "surface-dim": "#FFF0F3",
+                "on-error": "#FFFFFF",
+                "primary": "#FF85A1",
+                "tertiary": "#B588F7",
+                "background": "#FFF0F3",
+                "tertiary-container": "#D0BCFF",
+                "on-tertiary": "#FFFFFF",
+                "error-container": "#FFB3C1",
+                "primary-fixed": "#FFC0CB",
+                "tertiary-fixed-dim": "#B588F7",
+                "on-primary-fixed": "#590013"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+              },
+              "fontFamily": {
+                "headline": ["Plus Jakarta Sans"],
+                "label": ["Space Grotesk"],
+                "body": ["Plus Jakarta Sans"],
+                "code": ["Fira Code"]
+              }
+            },
+          },
+        }
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/storage.js"></script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 2px solid #FFD1DC;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(255, 133, 161, 0.4);
+        }
+        .active-pulse {
+            animation: pulseNeon 2s infinite ease-in-out;
+        }
+        @keyframes pulseNeon {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 133, 161, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(255, 133, 161, 0.4); }
+        }
+        .duo-button {
+            box-shadow: 0 4px 0px #E5738D;
+            transition: all 0.1s;
+        }
+        .duo-button:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0px #E5738D;
+        }
+        .xp-bar {
+            transition: width 0.5s ease-out;
+        }
+        .terminal-text {
+            font-family: 'Fira Code', monospace;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .animate-shake {
+            animation: shake 0.3s ease-in-out;
+        }
+        /* Help Modal */
+        #help-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); z-index:300; align-items:center; justify-content:center; }
+        .help-content { background:white; border-radius:1.5rem; padding:2rem; max-width:400px; width:100%; margin:1rem; border:2px solid #FFD1DC; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen">
+
+<div id="cb-root" class="max-w-4xl mx-auto min-h-screen flex flex-col relative overflow-hidden px-4 py-8">
+    
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 z-0 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[120px]"></div>
+    </div>
+
+    <!-- SPLASH SCREEN -->
+    <div id="screen-splash" class="relative z-10 flex-1 hidden flex-col items-center justify-center text-center space-y-12 animate-fade-in">
+        <div class="space-y-2">
+            <h1 class="text-5xl md:text-6xl font-bold tracking-tighter text-primary-fixed-dim drop-shadow-[0_0_15px_rgba(60,215,255,0.4)]">CIPHER BREAKER</h1>
+            <p class="text-label-sm font-label uppercase tracking-[0.4em] text-primary/60">Educational Cryptography Engine</p>
+        </div>
+        
+        <p class="text-on-surface-variant max-w-lg mx-auto text-body-lg">
+            Pecahkan enkripsi dari klasik hingga modern. Setiap level mengajarkan teknik kriptografi nyata untuk menguasai dunia siber.
+        </p>
+
+        <div id="splash-levels" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
+            <!-- Levels will be generated by JS -->
+        </div>
+
+        <button onclick="goMenu()" class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2 font-label uppercase tracking-widest text-sm">
+            <span class="material-symbols-outlined">arrow_back</span> Kembali ke Peta
+        </button>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="screen-game" class="relative z-10 flex-1 hidden flex-col space-y-6">
+        <!-- XP Progress (Duolingo Style) -->
+        <div class="flex items-center gap-4">
+            <button onclick="goMenu()" class="material-symbols-outlined text-gray-400 hover:text-vibrant-pink transition-colors">close</button>
+            <div class="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden border-2 border-white shadow-inner">
+                <div id="xp-progress" class="xp-bar h-full bg-vibrant-pink w-0"></div>
+            </div>
+            <div class="flex items-center gap-2 text-vibrant-pink font-black">
+                <span class="material-symbols-outlined fill-1">favorite</span>
+                <span id="hearts-display">5</span>
+            </div>
+        </div>
+
+        <!-- HUD -->
+        <header class="glass-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">terminal</span>
+                    <span id="level-badge" class="font-bold text-primary uppercase tracking-wider">Level 1</span>
+                </div>
+                <div id="progress-dots" class="flex gap-2">
+                    <!-- Dots will be generated -->
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <div class="text-center">
+                    <p class="text-[10px] text-on-surface-variant uppercase font-label">Score</p>
+                    <p id="score-display" class="font-bold text-primary tabular-nums">0</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-[10px] text-on-surface-variant uppercase font-label">Time</p>
+                    <p id="timer-display" class="font-bold text-secondary tabular-nums">90</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+            <!-- Main Content -->
+            <div class="lg:col-span-8 flex flex-col space-y-6">
+                <!-- Info Card -->
+                <div class="glass-card rounded-2xl p-6 flex gap-4">
+                    <div id="cipher-icon" class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-2xl border border-primary/20 shrink-0">🔐</div>
+                    <div>
+                        <h2 id="cipher-name" class="font-bold text-primary text-lg">Caesar Cipher</h2>
+                        <p id="cipher-desc" class="text-on-surface-variant text-sm leading-relaxed"></p>
+                    </div>
+                </div>
+
+                <!-- Challenge Box -->
+                <div class="glass-card rounded-2xl overflow-hidden border-primary/30 flex flex-col">
+                    <div class="bg-surface-container-high px-6 py-4 flex flex-col border-b border-primary/20">
+                        <div class="flex justify-between items-center mb-2">
+                            <span id="challenge-label" class="text-[10px] font-label text-on-surface-variant uppercase tracking-widest">CIPHERTEXT · ROUND 1/3</span>
+                            <div class="flex items-center gap-3 shrink-0">
+                                <button onclick="toggleHelp()" class="p-2 rounded-lg bg-secondary/10 text-secondary hover:bg-secondary/20 transition-all" title="Bantuan Logika">
+                                    <span class="material-symbols-outlined text-[18px]">help</span>
+                                </button>
+                                <span id="key-display" class="bg-white/50 px-3 py-1.5 rounded-lg text-primary text-[11px] font-bold font-code shadow-sm whitespace-nowrap">🔑 ?</span>
+                                <button id="hint-btn" onclick="useHint()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-[11px] font-bold hover:bg-primary/20 transition-all whitespace-nowrap">
+                                    <span class="material-symbols-outlined text-[16px]">lightbulb</span>
+                                    HINT <span id="hints-display">3</span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Progress Bar -->
+                        <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                            <div id="round-progress" class="h-full bg-gradient-to-r from-pink-400 to-blue-300 transition-all duration-500" style="width: 33%"></div>
+                        </div>
+                        <p class="text-[9px] text-gray-400 mt-1 font-bold italic text-center uppercase tracking-tighter">⚠️ Selesaikan 3 ronde agar terekam di riwayat profil!</p>
+                    </div>
+                    <div class="p-8 flex flex-col space-y-4">
+                        <div id="ciphertext-display" class="terminal-text text-3xl md:text-4xl text-primary-fixed-dim text-center break-all tracking-wider font-medium min-h-[100px] flex items-center justify-center">
+                            ...
+                        </div>
+                        <div id="key-hint" class="hidden glass-card p-4 rounded-xl text-sm border-secondary/30 text-secondary bg-secondary/5 italic animate-fade-in">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="flex gap-4">
+                    <input type="text" id="answer-input" placeholder="Ketik jawaban di sini..." 
+                           class="flex-1 bg-white border-4 border-pastel-pink rounded-2xl px-6 py-4 text-xl terminal-text uppercase focus:border-vibrant-pink outline-none transition-all placeholder:text-gray-300 shadow-inner"
+                           onkeydown="if(event.key==='Enter')checkAnswer()">
+                    <button onclick="checkAnswer()" class="px-8 bg-vibrant-pink text-white font-black rounded-2xl hover:bg-pink-400 transition-all duo-button uppercase tracking-wider shadow-lg">
+                        DECODE
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tools Sidebar -->
+            <div class="lg:col-span-4 flex flex-col space-y-4">
+                <h3 class="text-xs font-label text-on-surface-variant uppercase tracking-widest px-2">Tools Analisis</h3>
+                <div class="grid grid-cols-1 gap-3">
+                    <button onclick="toggleTool('freq')" class="tool-btn flex items-center gap-3 p-4 glass-card rounded-2xl text-left hover:border-primary/50 group border-b-4 border-pastel-pink active:border-b-0 active:translate-y-1 transition-all">
+                        <span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">bar_chart</span>
+                        <span class="text-sm font-black uppercase text-gray-600">Frekuensi</span>
+                    </button>
+                    <button onclick="toggleTool('alpha')" class="tool-btn flex items-center gap-3 p-4 glass-card rounded-2xl text-left hover:border-primary/50 group border-b-4 border-pastel-pink active:border-b-0 active:translate-y-1 transition-all">
+                        <span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">abc</span>
+                        <span class="text-sm font-black uppercase text-gray-600">Alfabet</span>
+                    </button>
+
+                </div>
+
+                <!-- Dynamic Panels -->
+                <div id="panel-freq" class="hidden glass-card p-4 rounded-2xl space-y-4 animate-fade-in">
+                    <h4 class="text-[10px] font-label text-primary uppercase">Analisis Frekuensi</h4>
+                    <div id="freq-bars" class="space-y-2"></div>
+                </div>
+                
+                <div id="panel-alpha" class="hidden glass-card p-4 rounded-2xl space-y-4 animate-fade-in">
+                    <h4 class="text-[10px] font-label text-primary uppercase">Tabel Alfabet</h4>
+                    <div id="alpha-chips" class="flex flex-wrap gap-2"></div>
+                </div>
+
+
+
+                <!-- Tool: Vigenere Table -->
+                <div id="panel-vigenere" class="hidden glass-card p-4 rounded-2xl space-y-3 animate-fade-in">
+                    <h4 class="text-[10px] font-label text-primary uppercase">Vigenère Square</h4>
+                    <div class="overflow-auto max-h-48 rounded-lg border border-pink-100">
+                        <table class="text-[8px] font-mono w-full text-center bg-white">
+                            <tbody id="vigenere-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tool: RSA Calc -->
+                <div id="panel-rsa" class="hidden glass-card p-4 rounded-2xl space-y-3 animate-fade-in">
+                    <h4 class="text-[10px] font-label text-primary uppercase">Modular Calc (M^e mod n)</h4>
+                    <div class="grid grid-cols-3 gap-2">
+                        <input type="number" id="rsa-m" placeholder="M" class="text-[10px] p-2 border rounded-lg bg-white/50">
+                        <input type="number" id="rsa-e" placeholder="e" class="text-[10px] p-2 border rounded-lg bg-white/50">
+                        <input type="number" id="rsa-n" placeholder="n" class="text-[10px] p-2 border rounded-lg bg-white/50">
+                    </div>
+                    <button onclick="calculateRSA()" class="w-full py-2 bg-vibrant-pink text-white text-[10px] font-black rounded-lg uppercase shadow-sm">Calculate</button>
+                    <p id="rsa-result" class="text-center font-bold text-vibrant-pink text-lg">--</p>
+                </div>
+
+                <!-- Tool: Atbash Helper -->
+                <div id="panel-atbash" class="hidden glass-card p-4 rounded-2xl space-y-3 animate-fade-in">
+                    <h4 class="text-[10px] font-label text-primary uppercase">Atbash Reverse Map</h4>
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] font-mono bg-white/50 p-3 rounded-xl border border-pink-100">
+                        <div class="flex justify-between border-b border-pink-50"><span>A ↔ Z</span><span>N ↔ M</span></div>
+                        <div class="flex justify-between border-b border-pink-50"><span>B ↔ Y</span><span>O ↔ L</span></div>
+                        <div class="flex justify-between border-b border-pink-50"><span>C ↔ X</span><span>P ↔ K</span></div>
+                        <div class="flex justify-between border-b border-pink-50"><span>D ↔ W</span><span>Q ↔ J</span></div>
+                        <div class="flex justify-between border-b border-pink-50"><span>E ↔ V</span><span>R ↔ I</span></div>
+                        <div class="flex justify-between border-b border-pink-50"><span>F ↔ U</span><span>S ↔ H</span></div>
+                        <div class="flex justify-between border-b border-pink-50"><span>G ↔ T</span><span>T ↔ G</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </div>
+
+    <!-- HELP MODAL -->
+    <div id="help-modal">
+        <div class="help-content space-y-4">
+            <div class="flex items-center gap-3 border-b border-pink-100 pb-3">
+                <span class="material-symbols-outlined text-secondary">info</span>
+                <h3 class="font-black text-gray-700 uppercase">Panduan Dekripsi</h3>
+            </div>
+            <div id="help-text" class="text-sm text-gray-600 space-y-3 leading-relaxed"></div>
+            <button onclick="toggleHelp()" class="w-full py-3 bg-secondary text-white font-black rounded-xl uppercase shadow-md hover:opacity-90 transition-all">Tutup</button>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <!-- RESULT SCREEN -->
+    <div id="screen-result" class="relative z-10 flex-1 hidden flex-col items-center justify-center p-6 animate-fade-in">
+        <div class="w-full max-w-2xl space-y-8 flex flex-col items-center">
+            
+            <!-- Header Section -->
+            <div class="text-center space-y-4">
+                <div id="result-icon" class="text-8xl filter drop-shadow-[0_0_20px_rgba(255,215,0,0.5)] animate-bounce">🏆</div>
+                <div class="space-y-2">
+                    <h2 id="result-title" class="text-5xl md:text-6xl font-black tracking-tight text-vibrant-pink">MISSION SUCCESS!</h2>
+                    <p id="result-score-text" class="text-gray-500 font-bold text-lg">Skor Akhir: <span id="result-score-val" class="text-vibrant-pink text-2xl">1746</span></p>
+                </div>
+            </div>
+
+            <!-- Detail Cards Group -->
+            <div class="grid grid-cols-1 gap-6 w-full">
+                <!-- Explanation Card -->
+                <div class="glass-card rounded-3xl p-6 border-pink-200 bg-white/90 shadow-xl shadow-pink-100/50">
+                    <div class="flex items-center gap-2 mb-4 border-b border-pink-100 pb-2">
+                        <span class="material-symbols-outlined text-vibrant-pink">psychology</span>
+                        <h3 class="font-black text-gray-700 uppercase text-xs tracking-widest">Cara Kerja Metode</h3>
+                    </div>
+                    <div id="explanation-text" class="text-gray-600 text-sm leading-relaxed space-y-4 font-medium">
+                        <!-- Content injected -->
+                    </div>
+                </div>
+
+                <!-- Character Unlock Banner -->
+                <div id="char-unlock-banner" class="hidden glass-card rounded-3xl p-6 border-2 border-yellow-400 bg-gradient-to-r from-yellow-50 to-white shadow-xl shadow-yellow-100 flex items-center gap-6 animate-fade-in">
+                    <div class="relative">
+                        <div class="w-20 h-20 shrink-0 rounded-2xl overflow-hidden border-4 border-white shadow-lg">
+                            <img id="char-unlock-img" src="" alt="" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute -top-2 -right-2 bg-yellow-400 text-white p-1 rounded-full shadow-lg">
+                            <span class="material-symbols-outlined text-xs">auto_awesome</span>
+                        </div>
+                    </div>
+                    <div class="text-left flex-1">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-yellow-600 mb-1">🎁 Karakter Baru Terbuka!</p>
+                        <h4 id="char-unlock-name" class="text-xl font-black text-gray-800">WiseOwl</h4>
+                        <p id="char-unlock-rarity" class="text-xs text-gray-500 font-bold italic"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 w-full pt-4">
+                <button id="btn-next" onclick="nextLevel()" class="px-10 py-5 bg-vibrant-pink text-white font-black rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-pink-200 uppercase tracking-widest flex items-center gap-3">
+                    <span class="material-symbols-outlined">rocket_launch</span>
+                    <span>Lanjut ke Level 2</span>
+                </button>
+                <button onclick="goMenu()" class="px-10 py-5 bg-white text-gray-700 font-black rounded-2xl border-2 border-gray-100 hover:bg-gray-50 active:scale-95 transition-all shadow-lg uppercase tracking-widest flex items-center gap-3">
+                    <span class="material-symbols-outlined">map</span>
+                    <span>Kembali ke Peta</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const CIPHER_CONFIG = {
+  'caesar_easy': {
+    name: 'CAESAR CIPHER (EASY)',
+    words: [
+      { p: 'KRIPTOGRAFI', h: 'Ilmu menyandikan pesan' }, { p: 'KEAMANAN', h: 'Aspek utama dalam data' },
+      { p: 'DIGITAL', h: 'Dunia teknologi saat ini' }, { p: 'RAHASIA', h: 'Pesan yang tersembunyi' },
+      { p: 'SANDI', h: 'Kode rahasia' }, { p: 'ALGORITMA', h: 'Langkah penyelesaian masalah' },
+      { p: 'ENKRIPSI', h: 'Proses menyandikan' }, { p: 'DATA', h: 'Informasi digital' }
+    ],
+    icon: '🔤', level: 'LEVEL 1 · EASY',
+    desc: 'Pergeseran alfabet sederhana (Shift 1-12).',
+    explain: 'Caesar Cipher menggeser setiap huruf sejauh k posisi dalam alfabet.',
+    formula: 'E(x) = (x + k) mod 26'
+  },
+  'caesar_hard': {
+    name: 'CAESAR CIPHER (HARD)',
+    words: [
+      { p: 'DEKRIPSI', h: 'Proses memecahkan sandi' }, { p: 'BRUTEFORCE', h: 'Mencoba semua kemungkinan' },
+      { p: 'KEYSPACE', h: 'Ruang lingkup kunci' }, { p: 'INFRASTRUKTUR', h: 'Fondasi sistem' },
+      { p: 'PROTOKOL', h: 'Aturan komunikasi' }, { p: 'Otentikasi', h: 'Verifikasi identitas' }
+    ],
+    icon: '⚔️', level: 'LEVEL 2 · MEDIUM',
+    desc: 'Tantangan pergeseran alfabet dengan shift besar (14-25).',
+    explain: 'Sama seperti level 1, namun pergeseran lebih jauh sehingga sulit ditebak manual.',
+    formula: 'E(x) = (x + k) mod 26'
+  },
+  'substitution': {
+    name: 'ATBASH CIPHER',
+    words: [
+      { p: 'KEBALIKAN', h: 'Posisi yang ditukar' }, { p: 'ALFABET', h: 'Kumpulan huruf A-Z' },
+      { p: 'SIMETRIS', h: 'Sama di kedua sisi' }, { p: 'SUBSTITUSI', h: 'Penggantian karakter' },
+      { p: 'MIRROR', h: 'Efek cermin alfabet' }
+    ],
+    icon: '🔀', level: 'LEVEL 3 · MEDIUM',
+    desc: 'Alfabet dibalik! A ↔ Z, B ↔ Y, C ↔ X.',
+    explain: 'Atbash adalah cipher substitusi di mana alfabet dibalik urutannya (A jadi Z, dst).',
+    formula: 'P = (25 - C)'
+  },
+  'vigenere_easy': {
+    name: 'VIGENERE (EASY)',
+    words: [
+      { p: 'POLIALFABETIK', h: 'Banyak alfabet' }, { p: 'KATAKUNCI', h: 'Kunci berupa kata' },
+      { p: 'REPETISI', h: 'Pengulangan kunci' }, { p: 'MATRIKS', h: 'Susunan tabel' },
+      { p: 'PERIODIK', h: 'Berulang teratur' }
+    ],
+    icon: '📜', level: 'LEVEL 4 · HARD',
+    desc: 'Menggunakan kata kunci pendek untuk pergeseran dinamis.',
+    explain: 'Vigenere menggunakan kata kunci yang diulang-ulang di atas teks asli untuk menggeser tiap huruf.',
+    formula: 'Ci = (Pi + Ki) mod 26'
+  },
+  'vigenere_hard': {
+    name: 'VIGENERE (HARD)',
+    words: [
+      { p: 'FREKUENSI', h: 'Kemunculan huruf' }, { p: 'PERIODISITAS', h: 'Sifat pengulangan' },
+      { p: 'KASISKI', h: 'Metode analisis sandi' }, { p: 'STATISTIK', h: 'Data kemunculan' },
+      { p: 'VIGENERE', h: 'Nama penemu sandi ini' }
+    ],
+    icon: '📓', level: 'LEVEL 5 · EXPERT',
+    desc: 'Kunci yang lebih panjang dan kata-kata yang lebih rumit.',
+    explain: 'Tanpa kunci yang tepat, pola polialfabetik sangat sulit dilacak menggunakan analisis frekuensi standar.',
+    formula: 'Ci = (Pi + Ki) mod 26'
+  },
+  'rsa_easy': {
+    name: 'RSA (EASY)',
+    words: [
+      { p: 'PRIMA', h: 'Hanya bisa dibagi 1 & diri sendiri' }, { p: 'MODULAR', h: 'Aritmatika sisa' },
+      { p: 'PUBLIK', h: 'Kunci yang dibagikan bebas' }, { p: 'PRIVAT', h: 'Kunci yang sangat rahasia' },
+      { p: 'ASIMETRIS', h: 'Kunci enkripsi & dekripsi beda' }
+    ],
+    icon: '🔑', level: 'LEVEL 6 · MASTER',
+    desc: 'Matematika modular dasar untuk enkripsi asimetris.',
+    explain: 'RSA bergantung pada sulitnya memfaktorkan perkalian dua bilangan prima besar menjadi faktor aslinya.',
+    formula: 'C = M^e mod n'
+  },
+  'rsa_hard': {
+    name: 'RSA (HARD)',
+    words: [
+      { p: 'FAKTORISASI', h: 'Pemecahan bilangan' }, { p: 'EKSPONEN', h: 'Operasi pangkat' },
+      { p: 'KONGRUENSI', h: 'Kesamaan dalam modular' }, { p: 'INVERTIBEL', h: 'Dapat dibalik operasinya' },
+      { p: 'TOTIENT', h: 'Fungsi totient Euler' }
+    ],
+    icon: '🔒', level: 'LEVEL 7 · LEGEND',
+    desc: 'Operasi modular dengan angka yang lebih besar dan kunci kompleks.',
+    explain: 'Keamanan RSA adalah fondasi dari transaksi internet modern dan sertifikat SSL/TLS.',
+    formula: 'M = C^d mod n'
+  },
+  'cryptanalysis': {
+    name: 'CRYPTANALYSIS',
+    words: [
+      { p: 'ANALISIS', h: 'Pemeriksaan mendalam' }, { p: 'POLA', h: 'Bentuk yang berulang' },
+      { p: 'INTEGRITAS', h: 'Keaslian data' }, { p: 'KRIPTANALIS', h: 'Orang yang memecahkan sandi' },
+      { p: 'HACKING', h: 'Penembusan sistem secara ilegal' }
+    ],
+    icon: '🕵️', level: 'LEVEL 8 · FINAL',
+    desc: 'Misi Master: Pecahkan sandi tanpa kunci! Gunakan statistik.',
+    explain: 'Kriptanalisis adalah seni memecahkan kode rahasia tanpa memiliki kuncinya menggunakan kelemahan algoritma.',
+    formula: 'Analisis Frekuensi Huruf'
+  }
+};
+
+const CIPHER_ORDER = ['caesar_easy','caesar_hard','substitution','vigenere_easy','vigenere_hard','rsa_easy','rsa_hard','cryptanalysis'];
+let state = {
+  cipherType: 'caesar',
+  plaintext: '',
+  ciphertext: '',
+  key: null,
+  extraKey: null,
+  score: 0,
+  hints: 3,
+  timeLeft: 90,
+  timer: null,
+  round: 1,
+  totalRounds: 3,
+  hintUsed: 0,
+  levelIndex: 0,
+  activeTool: null
+};
+
+// INITIALIZATION
+function switchScreen(screenId) {
+    const screens = ['splash', 'game', 'result'];
+    screens.forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) {
+            if (s === screenId) el.classList.remove('hidden');
+            else el.classList.add('hidden');
+        }
+    });
+}
+
+window.onload = () => {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const levelParam = urlParams.get('level');
+        
+        if (!GameStorage.isLoggedIn()) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        if (levelParam && CIPHER_CONFIG[levelParam]) {
+            const requestedIdx = CIPHER_ORDER.indexOf(levelParam);
+            const isUnlocked = (requestedIdx === 0) || GameStorage.isLevelUnlocked(requestedIdx + 1);
+
+            if (isUnlocked) {
+                startGame(levelParam);
+                return;
+            }
+        }
+        renderSplash();
+    } catch (e) {
+        console.error("Initialization error:", e);
+        renderSplash();
+    }
+};
+
+function renderSplash() {
+    switchScreen('splash');
+    const levelsContainer = document.getElementById('splash-levels');
+    if (!levelsContainer) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const levelParam = urlParams.get('level');
+    
+    levelsContainer.innerHTML = '';
+    levelsContainer.className = "grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl";
+
+    // If a level was requested but we are in splash (e.g. locked), highlight it
+    if (levelParam && CIPHER_CONFIG[levelParam]) {
+        const cfg = CIPHER_CONFIG[levelParam];
+        const idx = CIPHER_ORDER.indexOf(levelParam);
+        const unlocked = (idx === 0) || GameStorage.isLevelUnlocked(idx + 1);
+
+        levelsContainer.className = "flex flex-col items-center gap-6 w-full";
+        const mainCard = document.createElement('div');
+        mainCard.className = "w-full max-w-md glass-card p-8 rounded-3xl text-center space-y-6 border-b-8 border-pink-200 animate-fade-in";
+        
+        if (unlocked) {
+            mainCard.innerHTML = `
+                <div class="space-y-2">
+                    <div class="text-6xl mb-4">${cfg.icon}</div>
+                    <p class="text-xs font-black text-pink-400 uppercase tracking-widest">Misi Terdeteksi</p>
+                    <h2 class="text-3xl font-black text-gray-700">${cfg.name}</h2>
+                    <p class="text-gray-500 text-sm font-medium">${cfg.desc}</p>
+                </div>
+                <button onclick="startGame('${levelParam}')" class="w-full py-5 bg-pink-400 text-white font-black rounded-2xl uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-pink-200">
+                    Mulai Misi
+                </button>
+            `;
+        } else {
+            mainCard.innerHTML = `
+                <div class="space-y-2 opacity-60">
+                    <div class="text-6xl mb-4 grayscale">🔒</div>
+                    <p class="text-xs font-black text-gray-400 uppercase tracking-widest">Misi Terkunci</p>
+                    <h2 class="text-3xl font-black text-gray-400">${cfg.name}</h2>
+                    <p class="text-gray-400 text-sm font-medium">Selesaikan level sebelumnya untuk membuka misi ini!</p>
+                </div>
+                <button onclick="goMenu()" class="w-full py-4 border-2 border-gray-200 text-gray-400 font-black rounded-2xl uppercase">
+                    Kembali ke Peta
+                </button>
+            `;
+        }
+        levelsContainer.appendChild(mainCard);
+    } else {
+        // Full list
+        CIPHER_ORDER.forEach((type, idx) => {
+            const cfg = CIPHER_CONFIG[type];
+            if (!cfg) return;
+            const isUnlocked = (idx === 0) || GameStorage.isLevelUnlocked(idx + 1);
+            const isCompleted = GameStorage.isLevelCompleted(idx + 1);
+            
+            const card = document.createElement('div');
+            card.className = `glass-card p-5 rounded-3xl text-left flex flex-col justify-between transition-all group border-b-4 border-pastel-pink hover:translate-y-[-4px] active:translate-y-[0px] ${isUnlocked ? 'cursor-pointer' : 'opacity-50 grayscale cursor-not-allowed'}`;
+            
+            if (isUnlocked) card.onclick = () => startGame(type);
+
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-[10px] font-label text-primary uppercase tracking-wider">Level ${idx + 1}</span>
+                    ${isCompleted ? '<span class="material-symbols-outlined text-primary text-sm">check_circle</span>' : 
+                      !isUnlocked ? '<span class="material-symbols-outlined text-on-surface-variant text-sm">lock</span>' : ''}
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-xl">${cfg.icon}</div>
+                    <div>
+                        <h3 class="font-bold text-on-surface text-sm">${cfg.name.split(' ')[0]}</h3>
+                        <p class="text-[10px] text-on-surface-variant uppercase">${cfg.level.split(' · ')[1]}</p>
+                    </div>
+                </div>
+            `;
+            levelsContainer.appendChild(card);
+        });
+    }
+}
+
+function goMenu() {
+    window.location.href = 'peta-level.html';
+}
+
+function toggleHelp() {
+    const modal = document.getElementById('help-modal');
+    const isHidden = modal.style.display !== 'flex';
+    
+    if (isHidden) {
+        const cfg = CIPHER_CONFIG[state.cipherType];
+        let mapping = 'A=0, B=1, ..., Z=25';
+        if (state.cipherType.includes('rsa')) mapping = 'A=1, B=2, ..., Z=26';
+        
+        document.getElementById('help-text').innerHTML = `
+            <p><b>Metode:</b> ${cfg.name}</p>
+            <p><b>Rumus:</b> <code class="bg-gray-100 px-1 rounded">${cfg.formula.split('<br>').pop()}</code></p>
+            <p><b>Mapping:</b> <br><span class="text-xs font-mono text-primary">${mapping}</span></p>
+            <p class="text-[11px] bg-blue-50 p-2 rounded border border-blue-100 mt-2">
+                <b>Tips:</b> Kunci yang diberikan adalah kunci <b>Enkripsi</b>. Gunakan rumus dekripsi di atas untuk mendapatkan pesan asli.
+            </p>
+        `;
+        modal.style.display = 'flex';
+    } else {
+        modal.style.display = 'none';
+    }
+}
+
+function startGame(cipherType) {
+    state.cipherType = cipherType;
+    state.levelIndex = CIPHER_ORDER.indexOf(cipherType);
+    state.score = 0;
+    state.hints = GameStorage.getHints();
+    state.round = 1;
+    state.activeTool = null;
+    
+    switchScreen('game');
+    loadRound();
+}
+
+function loadRound() {
+    const cfg = CIPHER_CONFIG[state.cipherType];
+    clearInterval(state.timer);
+    
+    state.timeLeft = state.cipherType === 'rsa' ? 120 : state.cipherType === 'vigenere' ? 100 : 90;
+    state.hintUsed = 0;
+    state.hints = GameStorage.getHints();
+    state.activeTool = null;
+
+    document.getElementById('level-badge').textContent = `Level ${state.levelIndex + 1}`;
+    document.getElementById('cipher-icon').textContent = cfg.icon;
+    document.getElementById('cipher-name').textContent = cfg.name;
+    document.getElementById('cipher-desc').textContent = cfg.desc;
+    document.getElementById('challenge-label').textContent = `CIPHERTEXT · ROUND ${state.round}/${state.totalRounds}`;
+    document.getElementById('score-display').textContent = state.score;
+    document.getElementById('hints-display').textContent = state.hints;
+    document.getElementById('timer-display').textContent = state.timeLeft;
+    document.getElementById('hearts-display').textContent = GameStorage.getHearts();
+    document.getElementById('xp-progress').style.width = `${((state.round - 1) / state.totalRounds) * 100}%`;
+    document.getElementById('answer-input').value = '';
+    document.getElementById('key-hint').classList.add('hidden');
+    document.getElementById('hint-btn').disabled = state.hints <= 0;
+    
+    // Reset panels and show relevant ones
+    document.querySelectorAll('[id^="panel-"]').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('bg-primary/10', 'border-primary/50'));
+
+    const type = state.cipherType;
+    if (type === 'cryptanalysis') {
+        const freqBtn = document.getElementById('tool-btn-freq');
+        if (freqBtn) freqBtn.classList.remove('hidden');
+        const panelFreq = document.getElementById('panel-freq');
+        if (panelFreq) panelFreq.classList.remove('hidden');
+    }
+
+    if (type === 'substitution') {
+        document.getElementById('panel-atbash').classList.remove('hidden');
+    }
+    if (type.startsWith('vigenere')) {
+        document.getElementById('panel-vigenere').classList.remove('hidden');
+        buildVigenereTable();
+    }
+    if (type.startsWith('rsa')) {
+        document.getElementById('panel-rsa').classList.remove('hidden');
+    }
+
+    generateChallenge();
+    buildProgressDots();
+    startTimer();
+    buildFreqBars();
+    buildAlphaChips();
+}
+
+function buildVigenereTable() {
+    const body = document.getElementById('vigenere-table-body');
+    if (body.innerHTML !== '') return;
+    const alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (let i = 0; i < 26; i++) {
+        const tr = document.createElement('tr');
+        for (let j = 0; j < 26; j++) {
+            const td = document.createElement('td');
+            td.textContent = alpha[(i + j) % 26];
+            if (i === 0 || j === 0) td.className = "bg-gray-100 font-bold p-1";
+            else td.className = "p-1";
+            tr.appendChild(td);
+        }
+        body.appendChild(tr);
+    }
+}
+
+function calculateRSA() {
+    const m = parseInt(document.getElementById('rsa-m').value) || 0;
+    const e = parseInt(document.getElementById('rsa-e').value) || 0;
+    const n = parseInt(document.getElementById('rsa-n').value) || 1;
+    document.getElementById('rsa-result').textContent = modPow(m, e, n);
+}
+
+function generateChallenge() {
+    const cfg = CIPHER_CONFIG[state.cipherType];
+    const chosen = cfg.words[Math.floor(Math.random() * cfg.words.length)];
+    state.plaintext = chosen.p;
+
+    let keyText = '';
+    if (state.cipherType === 'caesar_easy' || state.cipherType === 'caesar_hard' || state.cipherType === 'cryptanalysis') {
+        const isChallenge = state.cipherType === 'cryptanalysis';
+        if (!isChallenge) {
+            state.key = state.cipherType === 'caesar_easy' ? Math.floor(Math.random() * 12) + 1 : Math.floor(Math.random() * 11) + 14;
+            state.ciphertext = caesarEnc(state.plaintext, state.key);
+            keyText = `+${state.key} (Mundur ${state.key})`;
+        } else {
+            state.key = Math.floor(Math.random() * 25) + 1;
+            state.ciphertext = caesarEnc(state.plaintext, state.key);
+            keyText = '??? (Gunakan Tools)';
+        }
+    } else if (state.cipherType === 'substitution') {
+        state.key = generateSubKey();
+        state.ciphertext = substEnc(state.plaintext, state.key);
+        keyText = 'Aturan: A=Z, B=Y, ...';
+    } else if (state.cipherType === 'vigenere_easy' || state.cipherType === 'vigenere_hard') {
+        const keys = state.cipherType === 'vigenere_easy' ? ['CAT','DOG','KEY','FOX'] : ['KUNCI','RAHASIA','CRYPTO','SANDI'];
+        state.key = keys[Math.floor(Math.random() * keys.length)];
+        state.ciphertext = vigenereEnc(state.plaintext, state.key);
+        keyText = `Kata Kunci: ${state.key}`;
+    } else if (state.cipherType.includes('rsa')) {
+        const isHard = state.cipherType === 'rsa_hard';
+        const primes = isHard ? [[7,11],[7,13],[11,13]] : [[5,7],[5,11],[3,11],[3,13]];
+        const [p,q] = primes[Math.floor(Math.random() * primes.length)];
+        const n = p * q; const phi = (p-1)*(q-1);
+        let e = 3; while (e < phi && gcd(e, phi) !== 1) e += 2;
+        let d = 1; while ((d * e) % phi !== 1) d++;
+        state.key = {e, d, n, p, q};
+        const nums = state.plaintext.split('').map(c => c.charCodeAt(0) - 64);
+        state.extraKey = nums.map(m => modPow(m, e, n));
+        state.ciphertext = state.extraKey.join(' ');
+        keyText = `d=${d}, n=${n} (A=1, B=2...)`;
+    }
+    
+    document.getElementById('ciphertext-display').textContent = state.ciphertext;
+    document.getElementById('key-display').textContent = `🔑 ${keyText}`;
+}
+
+// UTILITIES
+function gcd(a,b) { return b === 0 ? a : gcd(b, a % b); }
+function modPow(base, exp, mod) { let r=1; base%=mod; while(exp>0){if(exp%2===1)r=r*base%mod; exp=Math.floor(exp/2); base=base*base%mod;} return r; }
+function caesarEnc(text, shift) { return text.split('').map(c => { if(!/[A-Z]/.test(c)) return c; return String.fromCharCode(((c.charCodeAt(0)-65+shift)%26)+65); }).join(''); }
+function caesarDec(text, shift) { return caesarEnc(text, 26-shift); }
+function generateSubKey() { return 'ZYXWVUTSRQPONMLKJIHGFEDCBA'; }
+function substEnc(text, key) { return text.split('').map(c => { if(!/[A-Z]/.test(c)) return c; return key[c.charCodeAt(0)-65]; }).join(''); }
+function vigenereEnc(text, key) { return text.split('').map((c,i)=>{ if(!/[A-Z]/.test(c)) return c; const k=key[i%key.length].charCodeAt(0)-65; return String.fromCharCode(((c.charCodeAt(0)-65+k)%26)+65); }).join(''); }
+
+function startTimer() {
+    state.timer = setInterval(() => {
+        state.timeLeft--;
+        const el = document.getElementById('timer-display');
+        el.textContent = state.timeLeft;
+        if (state.timeLeft <= 10) el.classList.add('text-error', 'animate-pulse');
+        else el.classList.remove('text-error', 'animate-pulse');
+        
+        if (state.timeLeft <= 0) {
+            clearInterval(state.timer);
+            showResult(false);
+        }
+    }, 1000);
+}
+
+function useHint() {
+    if (state.hints <= 0) return;
+    
+    if (GameStorage.consumeHint()) {
+        state.hints--;
+        state.hintUsed++;
+        document.getElementById('hints-display').textContent = state.hints;
+        if (state.hints === 0) document.getElementById('hint-btn').disabled = true;
+        
+        const kh = document.getElementById('key-hint');
+        kh.classList.remove('hidden');
+
+        const cfg = CIPHER_CONFIG[state.cipherType];
+        const wordObj = cfg.words.find(w => w.p === state.plaintext);
+        const wordHint = wordObj ? wordObj.h : 'Teks rahasia';
+
+        let hintContent = '';
+        if (state.hintUsed === 1) {
+            hintContent = `💡 <b>Petunjuk:</b> "${wordHint}" (${state.plaintext.length} huruf)`;
+        } else if (state.hintUsed === 2) {
+            if (state.cipherType === 'caesar') hintContent = `📐 Shift adalah <b>${state.key}</b>. P = (C - ${state.key})`;
+            else if (state.cipherType === 'substitution') hintContent = `📐 3 huruf pertama: <b>${state.plaintext.slice(0,3)}...</b>`;
+            else if (state.cipherType === 'vigenere') hintContent = `📐 Kunci: <b>"${state.key}"</b>`;
+            else if (state.cipherType === 'rsa') hintContent = `📐 Gunakan privat key <b>d=${state.key.d}</b> dan <b>n=${state.key.n}</b>`;
+        } else {
+            hintContent = `🔑 Jawaban dimulai dengan: <b>${state.plaintext.slice(0,4)}...</b>`;
+        }
+        kh.innerHTML = hintContent;
+    }
+}
+
+function checkAnswer() {
+    const ans = document.getElementById('answer-input').value.toUpperCase().trim();
+    const inp = document.getElementById('answer-input');
+    
+    if (ans === state.plaintext) {
+        clearInterval(state.timer);
+        inp.classList.add('border-green-400', 'bg-green-50');
+        const pts = Math.max(100, 500 + (state.timeLeft * 2) - (state.hintUsed * 50));
+        state.score += pts;
+        GameStorage.addXP(20);
+        
+        GameStorage.addHint(1);
+        
+        setTimeout(() => {
+            if (state.round < state.totalRounds) {
+                state.round++;
+                loadRound();
+            } else {
+                GameStorage.completeLevel(state.levelIndex + 1, state.score);
+                showResult(true);
+            }
+        }, 600);
+    } else {
+        inp.classList.add('border-error', 'animate-shake');
+        if (!GameStorage.reduceHeart()) {
+            showResult(false);
+            return;
+        }
+        document.getElementById('hearts-display').textContent = GameStorage.getHearts();
+        setTimeout(() => inp.classList.remove('border-error', 'animate-shake'), 400);
+    }
+}
+
+function showResult(won) {
+    switchScreen('result');
+    const cfg = CIPHER_CONFIG[state.cipherType];
+    const isSuccess = won;
+    
+    document.getElementById('result-icon').textContent = won ? '🏆' : '💀';
+    document.getElementById('result-title').textContent = won ? 'MISSION SUCCESS!' : 'MISSION FAILED';
+    document.getElementById('result-title').className = `text-5xl md:text-6xl font-black tracking-tight ${won ? 'text-vibrant-pink' : 'text-error'}`;
+    document.getElementById('result-score-val').textContent = state.score;
+    
+    document.getElementById('explanation-text').innerHTML = `
+        <p class="text-gray-700">${cfg.explain}</p>
+        <div class="p-4 bg-pink-50 rounded-2xl font-mono text-xs text-vibrant-pink border border-pink-100 shadow-inner">
+            ${cfg.formula}
+        </div>
+        <p class="text-[11px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 p-2 rounded-lg inline-block">
+            Jawaban: <span class="text-gray-800">${state.plaintext}</span>
+        </p>
+    `;
+
+    const nextBtn = document.getElementById('btn-next');
+    if (won && state.levelIndex < CIPHER_ORDER.length - 1) {
+        nextBtn.classList.remove('hidden');
+        nextBtn.innerHTML = `
+            <span class="material-symbols-outlined">rocket_launch</span>
+            <span>Lanjut ke Level ${state.levelIndex + 2}</span>
+        `;
+    } else {
+        nextBtn.classList.add('hidden');
+    }
+
+    // Show character unlock banner if a new character was earned
+    const banner = document.getElementById('char-unlock-banner');
+    banner.classList.add('hidden');
+    if (won) {
+        const levelNum = state.levelIndex + 1;
+        const newChar = CHARACTER_CATALOG.find(c => c.unlockLevel === levelNum);
+        if (newChar) {
+            document.getElementById('char-unlock-img').src = newChar.img;
+            document.getElementById('char-unlock-name').textContent = newChar.name;
+            document.getElementById('char-unlock-rarity').textContent = newChar.rarity + ' · ' + newChar.desc;
+            banner.classList.remove('hidden');
+        }
+    }
+}
+
+function nextLevel() {
+    const nextType = CIPHER_ORDER[state.levelIndex + 1];
+    if (nextType) startGame(nextType);
+    else goMenu();
+}
+
+// TOOLS UI
+function buildProgressDots() {
+    const container = document.getElementById('progress-dots');
+    container.innerHTML = '';
+    for (let i = 1; i <= state.totalRounds; i++) {
+        const dot = document.createElement('div');
+        dot.className = `w-8 h-1.5 rounded-full transition-all ${i < state.round ? 'bg-primary' : i === state.round ? 'bg-primary animate-pulse' : 'bg-white/10'}`;
+        container.appendChild(dot);
+    }
+}
+
+function buildFreqBars() {
+    const container = document.getElementById('freq-bars');
+    container.innerHTML = '';
+    const ct = state.ciphertext.replace(/[^A-Z]/g,'');
+    const freq = {}; ct.split('').forEach(c => freq[c] = (freq[c]||0)+1);
+    const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    const max = sorted[0] ? sorted[0][1] : 1;
+    
+    sorted.forEach(([ch, count]) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center gap-3';
+        row.innerHTML = `
+            <span class="w-4 terminal-text text-xs text-primary">${ch}</span>
+            <div class="flex-1 h-2 bg-surface-container rounded-full overflow-hidden">
+                <div class="h-full bg-primary/40" style="width: ${(count/max)*100}%"></div>
+            </div>
+            <span class="text-[10px] tabular-nums opacity-60">${count}</span>
+        `;
+        container.appendChild(row);
+    });
+}
+
+function buildAlphaChips() {
+    const container = document.getElementById('alpha-chips');
+    container.innerHTML = '';
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(c => {
+        const chip = document.createElement('button');
+        chip.className = 'w-7 h-7 flex items-center justify-center rounded-lg border border-white/5 text-[10px] terminal-text hover:border-primary/40 transition-colors';
+        chip.textContent = c;
+        chip.onclick = () => chip.classList.toggle('bg-primary/20');
+        container.appendChild(chip);
+    });
+}
+
+function toggleTool(name) {
+    const panel = document.getElementById(`panel-${name}`);
+    const isHidden = panel.classList.contains('hidden');
+    
+    // Hide others
+    document.querySelectorAll('[id^="panel-"]').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('bg-primary/10', 'border-primary/50'));
+
+    if (isHidden) {
+        panel.classList.remove('hidden');
+        // Find the button that triggered this (roughly)
+        const btn = Array.from(document.querySelectorAll('.tool-btn')).find(b => b.textContent.toLowerCase().includes(name === 'freq' ? 'frekuensi' : name === 'alpha' ? 'alfabet' : 'caesar'));
+        if (btn) btn.classList.add('bg-primary/10', 'border-primary/50');
+    }
+}
+
+function updateCaesarWheel() {
+    const shift = parseInt(document.getElementById('caesar-slider').value);
+    document.getElementById('caesar-shift-val').textContent = shift;
+    const ct = state.ciphertext.replace(/[^A-Z]/g,'');
+    const decrypted = caesarDec(ct, shift);
+    // Limit preview to first 3 characters to prevent cheating
+    const preview = decrypted.slice(0, 3);
+    document.getElementById('caesar-preview').innerHTML = `Preview (3 huruf): <span class="text-primary font-bold">${preview}...</span><br><span class="text-[10px] opacity-50">Gunakan ini untuk menemukan pola, lalu hitung sisanya!</span>`;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CryptoQuest - Splash</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #FF85A1 0%, #AEE2FF 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+        }
+        .splash-logo {
+            animation: bounceIn 1.2s cubic-bezier(0.36, 0, 0.66, -0.56) forwards, float 3s ease-in-out infinite 1.2s;
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        .progress-bar {
+            width: 0%;
+            animation: progress 2.5s ease-in-out forwards;
+        }
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        .bg-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.2) 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center relative">
+    <div class="absolute inset-0 bg-pattern opacity-30"></div>
+    
+    <div class="relative z-10 text-center space-y-8">
+        <div class="splash-logo inline-block">
+            <div class="w-32 h-32 bg-white rounded-[2.5rem] flex items-center justify-center text-vibrant-pink shadow-2xl">
+                <span class="material-symbols-outlined text-7xl text-[#FF85A1]">lock_open</span>
+            </div>
+        </div>
+        
+        <div class="space-y-2">
+            <h1 class="text-5xl font-black text-white tracking-tighter drop-shadow-lg">CryptoQuest</h1>
+            <p class="text-pink-100 font-bold uppercase tracking-[0.3em] text-sm">Decode Your Destiny</p>
+        </div>
+
+        <div class="w-72 h-4 bg-white/20 rounded-full overflow-hidden mx-auto border-2 border-white/40 shadow-inner">
+            <div class="h-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)] progress-bar"></div>
+        </div>
+        
+        <p class="text-white/80 font-bold text-xs animate-pulse">MEMUAT MODUL KRIPTOGRAFI...</p>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script>
+        setTimeout(() => {
+            const data = GameStorage.load();
+            if (GameStorage.isLoggedIn()) {
+                window.location.href = 'beranda-animasi.html';
+            } else if (!GameStorage.hasAnyAccount()) {
+                // Force registration for new users
+                window.location.href = 'login.html?mode=register';
+            } else {
+                window.location.href = 'login.html';
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

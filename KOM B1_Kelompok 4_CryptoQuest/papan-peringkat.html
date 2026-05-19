@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CryptoQuest - Papan Peringkat &amp; Koleksi</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@500&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#FFFFFF",
+                        "inverse-surface": "#131313",
+                        "surface-variant": "#FFF0F3",
+                        "primary-fixed-dim": "#FF85A1",
+                        "tertiary-fixed": "#72DDF7",
+                        "on-secondary-fixed": "#001e2f",
+                        "on-background": "#4A4A4A",
+                        "surface-container-high": "#FFE1E9",
+                        "on-tertiary-fixed": "#001f26",
+                        "inverse-on-surface": "#FFFFFF",
+                        "surface-container-low": "#FFF9FA",
+                        "inverse-primary": "#E5738D",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#FFFFFF",
+                        "on-secondary": "#FFFFFF",
+                        "surface-container-lowest": "#FFFFFF",
+                        "on-primary-container": "#FF4D6D",
+                        "outline-variant": "#FFD1DC",
+                        "on-secondary-container": "#00344e",
+                        "secondary-fixed": "#72DDF7",
+                        "on-tertiary-container": "#005868",
+                        "secondary": "#72DDF7",
+                        "on-surface": "#4A4A4A",
+                        "on-surface-variant": "#8E8E8E",
+                        "surface-bright": "#FFFFFF",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "secondary-container": "#AEE2FF",
+                        "primary-container": "#FFD1DC",
+                        "surface-container-highest": "#FFB3C1",
+                        "outline": "#FF85A1",
+                        "surface-container": "#FFF5F7",
+                        "surface-tint": "#FF85A1",
+                        "error": "#FF4D6D",
+                        "on-primary-fixed-variant": "#80001C",
+                        "secondary-fixed-dim": "#72DDF7",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "surface-dim": "#FFF0F3",
+                        "on-error": "#FFFFFF",
+                        "primary": "#FF85A1",
+                        "tertiary": "#B588F7",
+                        "background": "#FFF0F3",
+                        "tertiary-container": "#D0BCFF",
+                        "on-tertiary": "#FFFFFF",
+                        "error-container": "#FFB3C1",
+                        "primary-fixed": "#FFC0CB",
+                        "tertiary-fixed-dim": "#B588F7",
+                        "on-primary-fixed": "#590013"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "48px",
+                        "margin": "24px",
+                        "sm": "12px",
+                        "md": "24px",
+                        "base": "8px",
+                        "xl": "80px",
+                        "gutter": "20px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Space Grotesk"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "code-md": ["Fira Code"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-xl": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "code-md": ["14px", {"lineHeight": "1.5", "fontWeight": "450"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            border: 2px solid #FFD1DC;
+        }
+        .electronic-border {
+            box-shadow: inset 0 0 10px rgba(255, 133, 161, 0.1), 0 0 5px rgba(255, 133, 161, 0.05);
+        }
+        .neon-glow {
+            filter: drop-shadow(0 0 8px rgba(255, 133, 161, 0.4));
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hologram-row { background: linear-gradient(90deg, rgba(255,133,161,0.08) 0%, transparent 100%); border-left: 4px solid #FF85A1; }
+    .silhouette { filter: brightness(0) invert(0.2); }
+    .tab-active { background: #FFD1DC; color: #FF85A1; font-weight: 800; }
+    .tab-inactive { color: #8E8E8E; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md">
+
+<!-- LOGOUT MODAL -->
+<div id="logout-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 text-center space-y-4 shadow-2xl border-2 border-pink-100">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+            <span class="material-symbols-outlined text-red-400 text-3xl">logout</span>
+        </div>
+        <h3 class="text-xl font-black text-gray-700">Keluar dari CryptoQuest?</h3>
+        <p class="text-gray-500 text-sm">Progres kamu tersimpan. Kamu bisa masuk lagi kapan saja.</p>
+        <div class="flex gap-3 pt-2">
+            <button onclick="document.getElementById('logout-modal').style.display='none'" class="flex-1 py-3 border-2 border-pink-200 text-pink-400 font-bold rounded-2xl">Batal</button>
+            <button onclick="confirmLogout()" class="flex-1 py-3 bg-red-400 text-white font-black rounded-2xl uppercase">Keluar</button>
+        </div>
+    </div>
+</div>
+<header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 py-3 bg-white/90 backdrop-blur-lg border-b-2 border-pink-100 shadow-sm max-w-7xl mx-auto">
+<div class="text-xl font-black text-pink-400 tracking-tighter">CryptoQuest</div>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="font-semibold text-gray-500 hover:text-pink-400 transition-all" href="beranda-animasi.html">Materi</a>
+<a class="font-semibold text-gray-500 hover:text-pink-400 transition-all" href="peta-level.html">Peta Level</a>
+<a class="font-bold text-pink-400 border-b-2 border-pink-400 pb-1" href="papan-peringkat.html">Papan Peringkat</a>
+<a class="font-semibold text-gray-500 hover:text-pink-400 transition-all" href="tentang.html">Tentang</a>
+</nav>
+<div class="flex items-center gap-3">
+<button onclick="window.location.href='profil.html'" class="flex items-center gap-2 px-3 py-1 rounded-full bg-pink-400 text-white font-bold hover:bg-pink-500 transition-all shadow-md text-sm">
+<div id="player-avatar-top-container" class="w-7 h-7 rounded-full overflow-hidden border-2 border-white/50 bg-white/20 flex items-center justify-center">
+    <span id="player-avatar-top" class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1;">account_circle</span>
+</div>
+<span id="player-name-top" class="text-xs uppercase tracking-wider">Agen</span>
+</button>
+<button onclick="document.getElementById('logout-modal').style.display='flex'" class="flex items-center gap-1 px-3 py-2 rounded-full border-2 border-red-200 text-red-400 font-bold hover:bg-red-50 transition-all text-xs uppercase">
+<span class="material-symbols-outlined text-[16px]">logout</span>Keluar
+</button>
+</div>
+</header>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const data = GameStorage.load();
+    if (document.getElementById('player-name-top')) {
+        document.getElementById('player-name-top').textContent = data.playerName || 'Agen';
+        const activeChar = GameStorage.getActiveCharacter();
+        const container = document.getElementById('player-avatar-top-container');
+        if (container) container.innerHTML = `<img src="${activeChar.img}" class="w-full h-full object-cover">`;
+    }
+  });
+</script>
+<main class="pt-xl pb-xl px-margin max-w-7xl mx-auto space-y-xl">
+<!-- Papan Peringkat Section -->
+<section class="mt-lg">
+<div class="flex items-center justify-between mb-md">
+<div>
+<h1 class="text-headline-xl font-headline-xl text-primary-fixed-dim neon-glow">Papan Peringkat</h1>
+<p class="text-on-surface-variant font-body-md">Para peretas terbaik di jaringan CryptoQuest.</p>
+</div>
+<div class="hidden md:flex glass-card p-1.5 rounded-xl gap-1">
+<button id="tab-global" onclick="switchTab('global')" class="tab-active px-4 py-2 rounded-lg font-label-sm transition-all">Global</button>
+<button id="tab-nasional" onclick="switchTab('nasional')" class="tab-inactive px-4 py-2 rounded-lg font-label-sm transition-all hover:text-primary">Nasional</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Top 3 Podium (Visual) -->
+<div class="lg:col-span-12 grid grid-cols-3 gap-sm items-end h-64 mb-base">
+<!-- Rank 2 -->
+<div class="flex flex-col items-center">
+<div class="relative w-16 h-16 mb-2">
+<img class="w-full h-full rounded-full border-2 border-outline p-1" alt="CryptoWolf Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3nprKS1ZFYjn4hPYHYyC7W7C5m2FKlqKIm7F_dYSc7SqyAYEAspBIANBrFIux5ejc_FK5AjJ_hl65gIXmKxZHHK_j5c2op1RdMh-KAqNd0IvW3d72_QSvH3nWPOqfQTjnSchFtU0lR4C5QiGbbytsnUEasszNVDa2L6Hbz2-Dp6cO3RTzOt2N6ZJ5XXr_2Sbygj7KCu-Cf59Hradgd2gzDRMf_JsYhUnjcyFUzzV3FC7y89XNHso6Xh5zI4BSVagDqkZhxeKrHz7V"/>
+<div class="absolute -bottom-1 -right-1 bg-outline text-surface text-[10px] font-bold px-1.5 rounded-full">#2</div>
+</div>
+<div class="glass-card w-full h-24 rounded-t-xl flex flex-col items-center justify-center border-b-0">
+<span class="font-headline-md text-on-surface text-sm">CryptoWolf</span>
+<span class="text-primary-fixed-dim font-code-md text-xs">8,420 PT</span>
+</div>
+</div>
+<!-- Rank 1 -->
+<div class="flex flex-col items-center">
+<div class="relative w-20 h-20 mb-2">
+<img class="w-full h-full rounded-full border-4 border-primary-fixed-dim p-1 neon-glow" alt="CyberNeko Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpGm0WtwimyuP4FwqEAnLlxGvyoXi0tW3tXCwBEMHYgRbwWKE9-Fjzsz9kLgD45jDKW8Amym-ajAhs1X2bSgO4-IX3QrC9JwxU_kSlpw_AKo0fa-8-CNDmrMuOtzsTTGyqKPdMDErzv9xYHfb-XwydbmJN9FmawlIbFZVc0u-WthLvs9uPcSDt4ydXQS5_heQaNfkjO3atvm511s4RMEEdNwf5YEBbdIDrovvTgtFYEgvhEt166hR87M_LJpFzU6Za9pOl8JiPHwfV"/>
+<div class="absolute -bottom-1 -right-1 bg-primary-fixed-dim text-surface text-xs font-bold px-2 rounded-full">#1</div>
+</div>
+<div class="bg-primary-container/20 backdrop-blur-xl border border-primary/40 w-full h-32 rounded-t-xl flex flex-col items-center justify-center border-b-0 shadow-[0_0_20px_rgba(60,215,255,0.2)]">
+<span class="font-headline-md text-primary text-base">CyberNeko</span>
+<span class="text-primary-fixed-dim font-code-md text-sm">12,890 PT</span>
+</div>
+</div>
+<!-- Rank 3 -->
+<div class="flex flex-col items-center">
+<div class="relative w-16 h-16 mb-2">
+<img class="w-full h-full rounded-full border-2 border-orange-400/50 p-1" alt="ZeroDay Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQlKQi6QBpY3tw0lw9bntX-b0K4kbDmTQP2eaWhUhSWycsojZ8ByFfDSYURGSk6R8NY_bN1jgLVnne-0mil9XIudRiNAPZi8QPlRFmzQsDxqITqqrILWgyC3VvExtNP6G9gCFdnITpaFHBuJb9E8jX8p41mbwNt5VvB9pQdbTPYYipaF5juR6yKEQRvTELmK5M0h62JcSlCnVsd-ZWlvpsjX2Hrc5UJHLmrRUbQEsyi5yO_IdkMEgB_7IJ3bmzqT5yjWUQ--codTT3"/>
+<div class="absolute -bottom-1 -right-1 bg-orange-400/80 text-surface text-[10px] font-bold px-1.5 rounded-full">#3</div>
+</div>
+<div class="glass-card w-full h-20 rounded-t-xl flex flex-col items-center justify-center border-b-0">
+<span class="font-headline-md text-on-surface text-sm">ZeroDay</span>
+<span class="text-primary-fixed-dim font-code-md text-xs">7,150 PT</span>
+</div>
+</div>
+</div>
+<!-- Leaderboard List -->
+<div class="lg:col-span-12 space-y-2">
+<div class="hologram-row glass-card p-4 rounded-xl flex items-center justify-between electronic-border">
+<div class="flex items-center gap-md">
+<span class="font-code-md text-primary w-6">04</span>
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">person</span>
+</div>
+<span class="font-headline-md text-on-surface text-body-md">HashMaster</span>
+</div>
+<div class="flex items-center gap-xl">
+<div class="hidden md:flex flex-col items-end">
+<span class="text-label-sm text-on-surface-variant uppercase">Rank</span>
+<span class="text-body-md text-tertiary">Gold IV</span>
+</div>
+<div class="flex flex-col items-end min-w-[80px]">
+<span class="text-label-sm text-on-surface-variant uppercase">Skor</span>
+<span class="text-body-md font-code-md text-primary-fixed-dim">6,900 PT</span>
+</div>
+</div>
+</div>
+<div class="glass-card p-4 rounded-xl flex items-center justify-between opacity-80 hover:opacity-100 transition-opacity">
+<div class="flex items-center gap-md">
+<span class="font-code-md text-on-surface-variant w-6">05</span>
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">person</span>
+</div>
+<span class="font-headline-md text-on-surface text-body-md">BitHopper</span>
+</div>
+<div class="flex items-center gap-xl">
+<div class="hidden md:flex flex-col items-end">
+<span class="text-label-sm text-on-surface-variant uppercase">Rank</span>
+<span class="text-body-md text-secondary">Silver I</span>
+</div>
+<div class="flex flex-col items-end min-w-[80px]">
+<span class="text-label-sm text-on-surface-variant uppercase">Skor</span>
+<span class="text-body-md font-code-md text-primary-fixed-dim">5,420 PT</span>
+</div>
+</div>
+</div>
+<!-- Current User Row -->
+<div class="bg-primary/10 border-2 border-primary/50 p-4 rounded-xl flex items-center justify-between shadow-[0_0_15px_rgba(60,215,255,0.1)]">
+<div class="flex items-center gap-md">
+<span class="font-code-md text-primary-fixed-dim w-6">42</span>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center ring-2 ring-primary">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<span class="font-headline-md text-primary font-bold text-body-md">Kamu (You)</span>
+</div>
+<div class="flex items-center gap-xl">
+<div class="hidden md:flex flex-col items-end">
+<span class="text-label-sm text-primary-fixed-dim uppercase">Rank</span>
+<span class="text-body-md text-on-primary-container font-bold">Bronze II</span>
+</div>
+<div class="flex flex-col items-end min-w-[80px]">
+<span class="text-label-sm text-primary-fixed-dim uppercase">Skor</span>
+<span class="text-body-md font-code-md text-primary font-bold">1,250 PT</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Koleksi Karakter Section -->
+<section class="space-y-md">
+<div>
+<h2 class="text-headline-lg font-headline-lg text-primary">Koleksi Karakter</h2>
+<p class="text-on-surface-variant font-body-md">Buka kunci maskot baru dengan menyelesaikan misi.</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-md">
+<!-- Unlocked: Fox -->
+<div class="glass-card p-4 rounded-2xl flex flex-col items-center gap-sm group hover:scale-105 transition-transform cursor-pointer electronic-border">
+<div class="relative w-full aspect-square bg-surface-container-highest rounded-xl overflow-hidden p-2">
+<img class="w-full h-full object-contain" alt="CyberFox Companion" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrfDXIeNw0vylld1ooznoa72HcuhhJgKUPFB-Db9fOO8PW3217ECf9A4QVzlV1xix7_6s_YfgFV4mWZVAxje0qJwMomEExd56kMT7wif8d2w6mLL-cGmfhK5_mnrT4T6Fks__xYuqKo9mKY02EU240zkF0JscdZSLTyhJ-lNhzsCQocNR8jbdG6hWehb4aIoBG67ZLdPmHILe7WjmxloFFurl-57IQ_7WcFarhyMx2eaWvzJOuMqLKoBSsz1uG9CLzfi1V1esPBXVh"/>
+</div>
+<div class="text-center">
+<span class="text-label-sm text-primary uppercase block">CyberFox</span>
+<span class="text-[10px] text-tertiary">Rare Companion</span>
+</div>
+</div>
+<!-- Unlocked: Owl -->
+<div class="glass-card p-4 rounded-2xl flex flex-col items-center gap-sm group hover:scale-105 transition-transform cursor-pointer electronic-border">
+<div class="relative w-full aspect-square bg-surface-container-highest rounded-xl overflow-hidden p-2">
+<img class="w-full h-full object-contain" alt="CryptoOwl Companion" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC18GCLYCInN_dU4TzQL5tt80EORJmr-FQXUkEg5iq5nKVfF9uMix-B0Y7rB7jBZIcezcMX4vclAJRb7V3jqAGEt5VOBrjpZyqSeLTclCQQPf9oehahEcmzXZZMtArObtN5wyRz1gUtYMKR9Iujlb0ZJNNxSzlP3zdL7ylDQH6-786DeaOwjI1LgwcT8fOD_yM3vWfKpMQFgtXfwRfxlGYQLz41Lfxgevl-S8IMlJfSzhm_QE7Nmqh2CO-sWoPHoKFZkrfzhO1-K-TQ"/>
+</div>
+<div class="text-center">
+<span class="text-label-sm text-primary uppercase block">CryptoOwl</span>
+<span class="text-[10px] text-tertiary">Beginner Guide</span>
+</div>
+</div>
+<!-- Locked Karakter -->
+<div class="glass-card p-4 rounded-2xl flex flex-col items-center gap-sm opacity-50 grayscale relative overflow-hidden group">
+<div class="absolute inset-0 flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-outline text-4xl">lock</span>
+</div>
+<div class="relative w-full aspect-square bg-surface-container rounded-xl overflow-hidden p-2 silhouette">
+<img class="w-full h-full object-contain" alt="Locked Character Silhouette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWZ9kDG7cinu3eJqlR_BEEGk8Bbnj2z-BZRWL0AAvsjByiMeqAGyLsQY_eTXe8cK-X3uB_2uPppQc7ImVeni2H3Nf2aaZ-449_IrWFcGhhvFPkRlsF1zssBfRmihHaRcV6o4-6YKiQLef_y3jUPEHM_rHInmMPKXG2xNRQWV5xUDU3TyD-piYjTutWZ_dQ7ymV_HWJYKx-P8dCtb837CMHzr3IErMaeQy0ZuY6PtSDyZKMSs-oL6V6JFRC5lsi3rNJ9NTxOLOzr38U"/>
+</div>
+<div class="text-center">
+<span class="text-label-sm text-on-surface-variant uppercase block">???</span>
+<span class="text-[10px] text-on-surface-variant">Level 15 Requisite</span>
+</div>
+</div>
+<div class="glass-card p-4 rounded-2xl flex flex-col items-center gap-sm opacity-50 grayscale relative overflow-hidden group">
+<div class="absolute inset-0 flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-outline text-4xl">lock</span>
+</div>
+<div class="relative w-full aspect-square bg-surface-container rounded-xl overflow-hidden p-2 silhouette">
+<img class="w-full h-full object-contain" alt="Locked Character Silhouette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDoVxfKvzsn8mJFNUvriCVq5T-CZ7HOMcqepCPNCujCjChAMSKyAQPLJbqf4PtL8V11EMch7L4HmhO4u-ftHxGY8uPKlkllojZ7nXiR_5Oc1mBQdESWyrH4ZARHH1zK0NUPgTO3VDSjbgsTXW8GsjjyDK4KVqHZpUynURAsM_yrBV4DcLdSmvr8ykXEH-FGQKLqSNVdQc0GNQlEnIuH4BElO3WEGn6J3dzRwg01dyMzNFohfpUDgK38V6tNvSR36nhs1bTEpHrDnco"/>
+</div>
+<div class="text-center">
+<span class="text-label-sm text-on-surface-variant uppercase block">???</span>
+<span class="text-[10px] text-on-surface-variant">Level 25 Requisite</span>
+</div>
+</div>
+<div class="glass-card p-4 rounded-2xl flex flex-col items-center gap-sm opacity-50 grayscale relative overflow-hidden group">
+<div class="absolute inset-0 flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-outline text-4xl">lock</span>
+</div>
+<div class="relative w-full aspect-square bg-surface-container rounded-xl overflow-hidden p-2 silhouette">
+<img class="w-full h-full object-contain" alt="Locked Character Silhouette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7eAR7kW_SjMr8DIV4PmFTuoAjOOC9pMnPA-moWSlh6V5lFcWseyg9i9WfRoBaiPfrvhSVic_xnEKVixbM-mUmy4V4uhNWI1-KIfMNsVL3Qh6ORixqkX2FTvO5SyCxPIWmZf0fDveJn3nY7u2eYb9X_RYO0AiBc8cIPsPeWDXglDMg__k2KaiVtdnYYpfZAZng1dNcB9d5ay9hoettd4FOoBl7rEPWvjLzWT83gcg0q2d63n7eIFtjoYYmZa4wH_edwzYRDFg3n_u6"/>
+</div>
+<div class="text-center">
+<span class="text-label-sm text-on-surface-variant uppercase block">???</span>
+<span class="text-[10px] text-on-surface-variant">Legendary Achievement</span>
+</div>
+</div>
+<div class="glass-card p-4 rounded-2xl flex flex-col items-center gap-sm opacity-50 grayscale relative overflow-hidden group">
+<div class="absolute inset-0 flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-outline text-4xl">lock</span>
+</div>
+<div class="relative w-full aspect-square bg-surface-container rounded-xl overflow-hidden p-2 silhouette">
+<img class="w-full h-full object-contain" alt="Locked Character Silhouette" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvHKOr-PTlQHhEnDfQurlRTxrgFdQzKhVwwAXLn--VVIcvk2NLwx347rJfS-uea7xwy4MjFcrSydU_85YPKwepLHC-RDJVx0qJvDiQIJDIZT7ULAnNgzDKQk76atyOaJULL8f9bBXXn7A6eVLePSSsS_Dq3qk7XTAAXxq75eg1WJGrTm5lkBwOzVqpKNiBdockjLkdB_I9THgDSvhHpiVQuRSD0bFgykCMlZTZxQXgssz1oIrg6L0Rp81IWAk-ImzwgYrJiGy-RMjb"/>
+</div>
+<div class="text-center">
+<span class="text-label-sm text-on-surface-variant uppercase block">???</span>
+<span class="text-[10px] text-on-surface-variant">Special Event Only</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Achievements Section -->
+<section class="space-y-md">
+<h2 class="text-headline-lg font-headline-lg text-primary">Pencapaian</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Achievement 1 -->
+<div class="glass-card p-6 rounded-2xl border-l-4 border-primary shadow-[0_0_15px_rgba(60,215,255,0.05)] relative overflow-hidden group">
+<div class="flex items-start justify-between">
+<div class="space-y-2">
+<span class="font-label-sm text-primary uppercase tracking-tighter">Cipher Unlocker</span>
+<h3 class="text-headline-md text-on-surface">Master of Caesar</h3>
+<p class="text-on-surface-variant text-sm">Selesaikan 10 tantangan Sandi Caesar tanpa bantuan manual.</p>
+</div>
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">shield_person</span>
+</div>
+</div>
+<div class="mt-4 w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-full"></div>
+</div>
+<div class="absolute bottom-0 right-0 p-2 opacity-5">
+<span class="material-symbols-outlined text-9xl">verified</span>
+</div>
+</div>
+<!-- Achievement 2 -->
+<div class="glass-card p-6 rounded-2xl border-l-4 border-tertiary/50 opacity-80">
+<div class="flex items-start justify-between">
+<div class="space-y-2">
+<span class="font-label-sm text-tertiary uppercase tracking-tighter">Efficiency Expert</span>
+<h3 class="text-headline-md text-on-surface">Silent Protocol</h3>
+<p class="text-on-surface-variant text-sm">Selesaikan quest tingkat menengah dalam waktu kurang dari 2 menit.</p>
+</div>
+<div class="w-12 h-12 rounded-lg bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-3xl">timer</span>
+</div>
+</div>
+<div class="mt-4 flex justify-between items-end">
+<div class="w-2/3 bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full w-[65%]"></div>
+</div>
+<span class="font-code-md text-xs text-tertiary">65%</span>
+</div>
+</div>
+<!-- Achievement 3 -->
+<div class="glass-card p-6 rounded-2xl border-l-4 border-outline-variant opacity-60">
+<div class="flex items-start justify-between">
+<div class="space-y-2">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-tighter">Security Legend</span>
+<h3 class="text-headline-md text-on-surface">RSA Architect</h3>
+<p class="text-on-surface-variant text-sm">Berhasil mengimplementasikan enkripsi RSA asimetris 2048-bit.</p>
+</div>
+<div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-outline-variant text-3xl">key</span>
+</div>
+</div>
+<div class="mt-4 flex justify-between items-end">
+<div class="w-2/3 bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-outline-variant h-full w-0"></div>
+</div>
+<span class="font-code-md text-xs text-on-surface-variant">Locked</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant/30 py-lg mt-xl">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center px-margin gap-md">
+<div class="flex flex-col gap-xs items-center md:items-start">
+<div class="text-headline-sm font-headline-sm text-primary">CryptoQuest</div>
+<div class="font-body-md text-body-md text-on-surface-variant">© 2026 CryptoQuest. Belajar Kriptografi dengan Seru.</div>
+</div>
+<div class="flex gap-md">
+<a class="text-on-surface-variant hover:text-tertiary transition-colors text-label-sm" href="#">Kebijakan Privasi</a>
+<a class="text-on-surface-variant hover:text-tertiary transition-colors text-label-sm" href="/privacy.html">Kebijakan Privasi</a>
+<a class="text-on-surface-variant hover:text-tertiary transition-colors text-label-sm" href="/terms.html">Syarat Layanan</a>
+<a class="text-on-surface-variant hover:text-tertiary transition-colors text-label-sm" href="/help.html">Bantuan</a>
+</div>
+</div>
+</footer>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container/30 backdrop-blur-xl border-t border-primary/20 rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:opacity-100 hover:text-primary transition-opacity">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-sm text-label-sm">Peta</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:opacity-100 hover:text-primary transition-opacity">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-label-sm text-label-sm">Quest</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container/40 text-primary-fixed-dim rounded-xl px-4 py-1 ring-1 ring-primary/50 shadow-[0_0_15px_rgba(60,215,255,0.2)]">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-label-sm text-label-sm">Peringkat</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:opacity-100 hover:text-primary transition-opacity">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-sm text-label-sm">Profil</span>
+</div>
+</nav>
+<script src="js/storage.js"></script>
+    <script>
+        const GLOBAL_DATA = [
+            { rank:1, name:'CyberNeko', score:12890, rank_label:'Diamond I' },
+            { rank:2, name:'CryptoWolf', score:8420, rank_label:'Platinum II' },
+            { rank:3, name:'ZeroDay', score:7150, rank_label:'Gold I' },
+            { rank:4, name:'HashMaster', score:6900, rank_label:'Gold IV' },
+            { rank:5, name:'BitHopper', score:5420, rank_label:'Silver I' },
+        ];
+        const NASIONAL_DATA = [
+            { rank:1, name:'SandiGuru', score:9800, rank_label:'Diamond III' },
+            { rank:2, name:'KriptoMas', score:7650, rank_label:'Platinum I' },
+            { rank:3, name:'DataPakar', score:6300, rank_label:'Gold II' },
+            { rank:4, name:'ByteJagoan', score:5100, rank_label:'Silver III' },
+            { rank:5, name:'NetWarrior', score:4200, rank_label:'Bronze I' },
+        ];
+
+        let currentTab = 'global';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            const globalBtn = document.getElementById('tab-global');
+            const nasionalBtn = document.getElementById('tab-nasional');
+            if (tab === 'global') {
+                globalBtn.className = 'tab-active px-4 py-2 rounded-lg font-label-sm transition-all';
+                nasionalBtn.className = 'tab-inactive px-4 py-2 rounded-lg font-label-sm transition-all hover:text-primary';
+            } else {
+                nasionalBtn.className = 'tab-active px-4 py-2 rounded-lg font-label-sm transition-all';
+                globalBtn.className = 'tab-inactive px-4 py-2 rounded-lg font-label-sm transition-all hover:text-primary';
+            }
+            renderLeaderboard(tab === 'global' ? GLOBAL_DATA : NASIONAL_DATA);
+        }
+
+        function renderLeaderboard(data) {
+            const listEl = document.querySelector('.space-y-2');
+            if (!listEl) return;
+            const gameData = GameStorage.load();
+            const userScore = gameData.totalScore || 0;
+            const userName = gameData.playerName || 'Kamu';
+
+            // Remove items 4-5 (indices 3,4) and re-render them
+            const items = listEl.querySelectorAll('.hologram-row, .glass-card.p-4.opacity-80, .glass-card.p-4:not(.opacity-80)');
+            items.forEach(el => { if (!el.classList.contains('bg-primary')) el.remove(); });
+
+            const entries = data.slice(3);
+            entries.forEach(d => {
+                const div = document.createElement('div');
+                div.className = 'hologram-row glass-card p-4 rounded-xl flex items-center justify-between';
+                div.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <span class="font-mono text-pink-400 font-black w-6 text-sm">${String(d.rank).padStart(2,'0')}</span>
+                        <div class="w-10 h-10 rounded-full bg-pink-50 border border-pink-200 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-pink-300">person</span>
+                        </div>
+                        <span class="font-bold text-gray-700">${d.name}</span>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <span class="hidden md:block text-xs font-bold text-blue-300 bg-blue-50 px-2 py-1 rounded-full border border-blue-100">${d.rank_label}</span>
+                        <span class="font-black text-pink-400">${d.score.toLocaleString()} PT</span>
+                    </div>`;
+                listEl.insertBefore(div, listEl.querySelector('.bg-primary\\/10'));
+            });
+
+            // Update user score
+            const userRow = document.querySelector('.bg-primary\\/10');
+            if (userRow) {
+                userRow.querySelector('.font-code-md.text-primary.font-bold').textContent = userScore.toLocaleString() + ' PT';
+                userRow.querySelector('.font-headline-md.text-primary.font-bold').textContent = userName + ' (Kamu)';
+            }
+        }
+
+        function confirmLogout() {
+            GameStorage.logout();
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!GameStorage.hasAnyAccount()) {
+                window.location.href = 'login.html?mode=register';
+                return;
+            } else if (!GameStorage.isLoggedIn()) {
+                window.location.href = 'login.html';
+                return;
+            }
+            const data = GameStorage.load();
+            const nameEl = document.getElementById('player-name-top');
+            if (nameEl) nameEl.textContent = data.playerName || 'Agen';
+            const avatarEl = document.getElementById('player-avatar-top');
+            if (avatarEl) avatarEl.textContent = AVATARS[data.avatar] || AVATARS['1'];
+        });
+    </script></body></html>
