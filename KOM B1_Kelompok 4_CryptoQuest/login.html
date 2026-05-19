@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CryptoQuest - Masuk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'pastel-pink': '#FFD1DC',
+                        'vibrant-pink': '#FF85A1',
+                        'soft-pink': '#FFF0F3',
+                        'mint': '#B9F3E4',
+                        'pastel-blue': '#AEE2FF',
+                        'soft-blue': '#E0F4FF',
+                        'soft-purple': '#D0BCFF',
+                        'primary': '#FF85A1',
+                        'secondary': '#AEE2FF',
+                        'background': '#F0F8FF',
+                        'surface': '#FFFFFF',
+                    },
+                    borderRadius: {
+                        '2xl': '1rem',
+                        '3xl': '1.5rem',
+                        '4xl': '2rem',
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #FFF0F3 0%, #E0F4FF 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.5s ease;
+        }
+        .duo-button {
+            box-shadow: 0 4px 0px #E5738D;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .duo-button:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0px #E5738D;
+        }
+        .duo-button-secondary {
+            box-shadow: 0 4px 0px #90C8E5;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .duo-button-secondary:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0px #90C8E5;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 60px -15px rgba(255, 133, 161, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .input-field {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.6);
+        }
+        .input-field:focus {
+            transform: scale(1.02);
+            background: white;
+            box-shadow: 0 10px 20px -10px rgba(255, 133, 161, 0.2);
+        }
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+        .bg-pattern {
+            background-image: radial-gradient(#AEE2FF 2px, transparent 2px);
+            background-size: 40px 40px;
+        }
+        .float-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(to bottom right, rgba(255, 133, 161, 0.15), rgba(174, 226, 255, 0.15));
+            z-index: -1;
+            filter: blur(60px);
+            animation: drift 15s ease-in-out infinite alternate;
+        }
+        @keyframes drift {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(50px, 80px) scale(1.1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative overflow-y-auto py-12">
+    <div class="fixed inset-0 bg-pattern opacity-20 pointer-events-none"></div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[300] flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- INFO MODAL (for errors) -->
+    <div id="info-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);backdrop-filter:blur(4px);z-index:250;align-items:center;justify-content:center;">
+        <div class="bg-white rounded-3xl p-8 max-w-xs w-full mx-4 text-center space-y-4 shadow-2xl">
+            <div id="info-modal-icon" class="w-14 h-14 rounded-full flex items-center justify-center mx-auto"></div>
+            <h3 id="info-modal-title" class="text-lg font-black text-gray-700"></h3>
+            <p id="info-modal-msg" class="text-gray-500 text-sm"></p>
+            <button onclick="document.getElementById('info-modal').style.display='none'" class="w-full py-3 bg-pink-400 text-white font-black rounded-2xl uppercase tracking-wider">OK</button>
+        </div>
+    </div>
+    
+    <!-- Background Decorations -->
+    <div class="float-circle w-64 h-64 top-[-5%] left-[-5%]"></div>
+    <div class="float-circle w-96 h-96 bottom-[-10%] right-[-10%]" style="animation-delay: -2s;"></div>
+    <div class="float-circle w-48 h-48 top-[20%] right-[10%]" style="animation-delay: -5s;"></div>
+    <div class="float-circle w-72 h-72 bottom-[15%] left-[5%]" style="animation-delay: -7s;"></div>
+    
+    <div class="max-w-md w-full space-y-8 relative z-10">
+        <!-- Logo Area -->
+        <div class="text-center space-y-4">
+            <div class="relative inline-block">
+                <div class="w-24 h-24 bg-gradient-to-br from-vibrant-pink to-pastel-blue rounded-3xl flex items-center justify-center text-white text-5xl floating shadow-xl">
+                    <span class="material-symbols-outlined text-5xl">lock_open</span>
+                </div>
+                <div class="absolute -top-2 -right-2 w-8 h-8 bg-mint rounded-full border-4 border-white shadow-lg"></div>
+            </div>
+            <h1 class="text-4xl font-extrabold text-vibrant-pink tracking-tight drop-shadow-sm">CryptoQuest</h1>
+            <p class="text-gray-500 font-medium">Masuk untuk melanjutkan petualanganmu!</p>
+        </div>
+
+        <!-- Auth Card -->
+        <div class="glass-card rounded-4xl p-8 shadow-2xl space-y-6">
+            <div id="login-form" class="space-y-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-vibrant-pink ml-1 uppercase tracking-wider">Username</label>
+                    <input type="text" id="username" placeholder="cyber_agent" 
+                           class="input-field w-full px-5 py-4 border-2 border-pastel-pink rounded-2xl focus:border-pastel-blue outline-none font-semibold shadow-sm">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-vibrant-pink ml-1 uppercase tracking-wider">Kata Sandi</label>
+                    <input type="password" id="password" placeholder="••••••••" 
+                           class="input-field w-full px-5 py-4 border-2 border-pastel-pink rounded-2xl focus:border-pastel-blue outline-none font-semibold shadow-sm">
+                </div>
+                <button onclick="login()" class="w-full py-4 bg-vibrant-pink text-white font-black text-lg rounded-2xl duo-button uppercase tracking-wider mt-4 shadow-lg shadow-vibrant-pink/20">
+                    Masuk
+                </button>
+            </div>
+
+            <div id="register-form" class="hidden space-y-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-pastel-blue ml-1 uppercase tracking-wider">Nama Lengkap</label>
+                    <input type="text" id="reg-name" placeholder="Agent S" 
+                           class="input-field w-full px-5 py-4 border-2 border-pastel-blue/30 rounded-2xl focus:border-pastel-blue outline-none font-semibold shadow-sm">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-pastel-blue ml-1 uppercase tracking-wider">Username</label>
+                    <input type="text" id="reg-user" placeholder="cyber_agent" 
+                           class="input-field w-full px-5 py-4 border-2 border-pastel-blue/30 rounded-2xl focus:border-pastel-blue outline-none font-semibold shadow-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-pastel-blue ml-1 uppercase tracking-wider">Sandi</label>
+                        <input type="password" id="reg-pass" placeholder="••••" 
+                               class="input-field w-full px-5 py-4 border-2 border-pastel-blue/30 rounded-2xl focus:border-pastel-blue outline-none font-semibold shadow-sm">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-pastel-blue ml-1 uppercase tracking-wider">Konfirmasi</label>
+                        <input type="password" id="reg-pass-confirm" placeholder="••••" 
+                               class="input-field w-full px-5 py-4 border-2 border-pastel-blue/30 rounded-2xl focus:border-pastel-blue outline-none font-semibold shadow-sm">
+                    </div>
+                </div>
+                <button onclick="register()" class="w-full py-4 bg-pastel-blue text-white font-black text-lg rounded-2xl duo-button-secondary uppercase tracking-wider mt-4 shadow-lg shadow-pastel-blue/20">
+                    Daftar Sekarang
+                </button>
+            </div>
+
+            <div class="relative py-4">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t-2 border-pastel-pink"></div></div>
+                <div class="relative flex justify-center text-sm"><span class="px-4 bg-white text-gray-400 font-bold uppercase rounded-full">Atau</span></div>
+            </div>
+
+            <button onclick="toggleAuth()" id="toggle-btn" class="w-full py-4 border-2 border-pastel-pink text-vibrant-pink font-bold rounded-2xl hover:bg-soft-pink transition-all uppercase tracking-wider">
+                Buat Akun Baru
+            </button>
+        </div>
+
+        <p class="text-center text-gray-400 text-sm font-medium">
+            Dengan masuk, Anda setuju dengan <a href="#" class="text-vibrant-pink font-bold">Syarat & Ketentuan</a> kami.
+        </p>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script>
+        // Check login state and mode on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Auto-redirect if already logged in
+            if (GameStorage.isLoggedIn()) {
+                window.location.href = 'index.html';
+                return;
+            }
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            // If no account exists at all, force register mode
+            if (!GameStorage.hasAnyAccount() || mode === 'register') {
+                showRegister();
+            }
+        });
+
+        function showRegister() {
+            const loginForm = document.getElementById('login-form');
+            const regForm = document.getElementById('register-form');
+            const toggleBtn = document.getElementById('toggle-btn');
+            const title = document.querySelector('p.text-gray-500');
+
+            loginForm.classList.add('hidden');
+            regForm.classList.remove('hidden');
+            toggleBtn.innerText = 'Sudah Punya Akun?';
+            title.innerText = 'Ayo bergabung dengan ribuan agen lainnya!';
+        }
+
+        function showLogin() {
+            const loginForm = document.getElementById('login-form');
+            const regForm = document.getElementById('register-form');
+            const toggleBtn = document.getElementById('toggle-btn');
+            const title = document.querySelector('p.text-gray-500');
+
+            loginForm.classList.remove('hidden');
+            regForm.classList.add('hidden');
+            toggleBtn.innerText = 'Buat Akun Baru';
+            title.innerText = 'Masuk untuk melanjutkan petualanganmu!';
+        }
+
+        function toggleAuth() {
+            const loginForm = document.getElementById('login-form');
+            if (loginForm.classList.contains('hidden')) {
+                showLogin();
+            } else {
+                showRegister();
+            }
+        }
+
+        function login() {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value;
+            if (!user || !pass) { showModal('Peringatan', 'Masukkan username dan kata sandi!', 'warn'); return; }
+
+            const result = GameStorage.login(user, pass);
+
+            if (result === 'no_account') {
+                showModal('Akun Tidak Ditemukan', 'Username tidak terdaftar. Silakan buat akun baru terlebih dahulu.', 'error');
+                showRegister();
+                return;
+            }
+            if (result === 'wrong_password') {
+                showModal('Login Gagal', 'Kata sandi salah. Periksa kembali dan coba lagi.', 'error');
+                return;
+            }
+
+            const data = GameStorage.load();
+            showToast('Selamat datang kembali, ' + data.playerName + '.');
+            setTimeout(() => window.location.href = 'index.html', 1200);
+        }
+
+        function register() {
+            const user = document.getElementById('reg-user').value.trim();
+            const name = document.getElementById('reg-name').value.trim();
+            const pass = document.getElementById('reg-pass').value;
+            const passConfirm = document.getElementById('reg-pass-confirm').value;
+
+            if (!user || !name || !pass) { showModal('Data Tidak Lengkap', 'Lengkapi semua kolom yang diperlukan.', 'warn'); return; }
+            if (pass !== passConfirm) { showModal('Konfirmasi Gagal', 'Konfirmasi kata sandi tidak cocok. Periksa kembali.', 'error'); return; }
+
+            const ok = GameStorage.register(user, pass, name);
+            if (!ok) {
+                showModal('Username Sudah Digunakan', 'Username "' + user + '" sudah terdaftar. Gunakan username lain atau masuk dengan akun yang sudah ada.', 'error');
+                return;
+            }
+
+            showToast('Akun berhasil dibuat. Selamat datang, ' + name + '!');
+            setTimeout(() => window.location.href = 'index.html', 1500);
+        }
+
+        function showModal(title, msg, type) {
+            const iconEl = document.getElementById('info-modal-icon');
+            const colors = { error: 'bg-red-100', warn: 'bg-yellow-100', success: 'bg-green-100' };
+            const icons = { error: 'error', warn: 'warning', success: 'check_circle' };
+            iconEl.className = `w-14 h-14 rounded-full flex items-center justify-center mx-auto material-symbols-outlined text-4xl ${colors[type] || 'bg-blue-100'}`;
+            iconEl.style.cssText = `font-variation-settings:'FILL' 1;`;
+            iconEl.textContent = icons[type] || 'info';
+            document.getElementById('info-modal-title').textContent = title;
+            document.getElementById('info-modal-msg').textContent = msg;
+            document.getElementById('info-modal').style.display = 'flex';
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-green-400 text-white font-bold px-6 py-3 rounded-2xl shadow-xl text-sm pointer-events-auto text-center';
+            toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

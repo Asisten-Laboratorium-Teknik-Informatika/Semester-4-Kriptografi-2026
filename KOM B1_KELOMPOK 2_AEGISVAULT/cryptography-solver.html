@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptography Solver</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app">
+        <div class="header">
+            <h1>// <span>Cryptography</span> Solver</h1>
+            <p>Kalkulator kriptografi interaktif &mdash; Caesar · Hashing · RSA</p>
+        </div>
+
+        <div class="nav">
+            <button class="nav-btn active" onclick="switchPanel('caesar',this)">Caesar Cipher</button>
+
+            <button class="nav-btn" onclick="switchPanel('hash',this)">Hashing</button>
+            <button class="nav-btn" onclick="switchPanel('rsa',this)">RSA</button>
+        </div>
+
+        <!-- ══ CAESAR ══ -->
+        <div class="panel active" id="panel-caesar">
+            <div class="tabs">
+                <button class="tab active" onclick="caesarTab('enc',this)">Enkripsi</button>
+                <button class="tab" onclick="caesarTab('dec',this)">Dekripsi</button>
+                <button class="tab" onclick="caesarTab('brute',this)">Brute Force</button>
+            </div>
+            <!-- enc -->
+            <div id="c-enc">
+                <div class="input-group">
+                    <div class="section-label">Plaintext</div><textarea id="c-plain" placeholder="Masukkan teks..."></textarea></div>
+                <div class="row">
+                    <div>
+                        <div class="section-label">Kunci / Shift (1–25)</div><input type="number" id="c-key" value="3" min="1" max="25"></div>
+                </div>
+                <div class="action-row">
+                    <button class="btn-primary" onclick="caesarDo(true)">Enkripsi</button>
+                    <button class="btn-secondary" onclick="caesarDo(false)">Dekripsi</button>
+                </div>
+                <div id="c-result" class="result-box" style="display:none">
+                    <div class="result-label">Hasil</div>
+                    <div class="result-value" id="c-out"></div>
+                </div>
+                <div id="c-steps" class="steps-box" style="display:none">
+                    <div class="steps-header">Langkah-langkah perhitungan</div>
+                    <div id="c-steps-body"></div>
+                </div>
+                <div class="divider"></div>
+                <div class="section-label">Visualisasi Pergeseran Alfabet</div>
+                <div style="margin-bottom:6px;font-size:11px;color:#475569">Plaintext</div>
+                <div class="mono-grid" id="alpha-plain"></div>
+                <div style="margin:6px 0 6px;font-size:11px;color:#475569">Ciphertext (shift = <span id="shift-label">3</span>)</div>
+                <div class="mono-grid" id="alpha-cipher"></div>
+            </div>
+            <!-- dec -->
+            <div id="c-dec" style="display:none">
+                <div class="input-group">
+                    <div class="section-label">Ciphertext</div><textarea id="c-dec-in" placeholder="Masukkan ciphertext..."></textarea></div>
+                <div class="row">
+                    <div>
+                        <div class="section-label">Kunci / Shift</div><input type="number" id="c-dec-key" value="3" min="1" max="25"></div>
+                </div>
+                <div class="action-row"><button class="btn-primary" onclick="caesarDecPanel()">Dekripsi</button></div>
+                <div id="c-dec-result" class="result-box" style="display:none">
+                    <div class="result-label">Plaintext</div>
+                    <div class="result-value" id="c-dec-out"></div>
+                </div>
+                <div id="c-dec-steps" class="steps-box" style="display:none">
+                    <div class="steps-header">Langkah-langkah</div>
+                    <div id="c-dec-steps-body"></div>
+                </div>
+            </div>
+            <!-- brute -->
+            <div id="c-brute" style="display:none">
+                <div class="input-group">
+                    <div class="section-label">Ciphertext</div><textarea id="c-brute-in" placeholder="Masukkan ciphertext..."></textarea></div>
+                <div class="action-row"><button class="btn-primary" onclick="caesarBrute()">Coba Semua Kunci (1–25)</button></div>
+                <div id="c-brute-result" class="steps-box" style="display:none">
+                    <div class="steps-header">Semua kemungkinan dekripsi</div>
+                    <div id="c-brute-body"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ VIGENERE ══ -->
+        <div class="panel" id="panel-vigenere">
+            <div class="tabs">
+                <button class="tab active" onclick="vigTab('enc',this)">Enkripsi</button>
+                <button class="tab" onclick="vigTab('dec',this)">Dekripsi</button>
+            </div>
+            <div id="v-enc">
+                <div class="input-group">
+                    <div class="section-label">Plaintext</div><textarea id="v-plain" placeholder="Masukkan teks..."></textarea></div>
+                <div class="input-group">
+                    <div class="section-label">Kunci (kata, huruf saja)</div><input type="text" id="v-key" placeholder="Contoh: KUNCI"></div>
+                <div class="action-row"><button class="btn-primary" onclick="vigDo(true)">Enkripsi</button></div>
+                <div id="v-result" class="result-box" style="display:none">
+                    <div class="result-label">Ciphertext</div>
+                    <div class="result-value" id="v-out"></div>
+                </div>
+                <div id="v-steps" class="steps-box" style="display:none">
+                    <div class="steps-header">Tabel perhitungan (maks 8 karakter pertama)</div>
+                    <div id="v-steps-body"></div>
+                </div>
+            </div>
+            <div id="v-dec" style="display:none">
+                <div class="input-group">
+                    <div class="section-label">Ciphertext</div><textarea id="v-dec-in" placeholder="Masukkan ciphertext..."></textarea></div>
+                <div class="input-group">
+                    <div class="section-label">Kunci (kata)</div><input type="text" id="v-dec-key" placeholder="Contoh: KUNCI"></div>
+                <div class="action-row"><button class="btn-primary" onclick="vigDo(false)">Dekripsi</button></div>
+                <div id="v-dec-result" class="result-box" style="display:none">
+                    <div class="result-label">Plaintext</div>
+                    <div class="result-value" id="v-dec-out"></div>
+                </div>
+                <div id="v-dec-steps" class="steps-box" style="display:none">
+                    <div class="steps-header">Tabel perhitungan (maks 8 karakter pertama)</div>
+                    <div id="v-dec-steps-body"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ HASH ══ -->
+        <div class="panel" id="panel-hash">
+            <div class="input-group">
+                <div class="section-label">Input Teks</div><textarea id="h-in" placeholder="Masukkan teks untuk di-hash..."></textarea></div>
+            <div class="chip-row" id="h-chips">
+                <button class="chip active" data-algo="MD5" onclick="selectAlgo(this)">MD5</button>
+                <button class="chip" data-algo="SHA-1" onclick="selectAlgo(this)">SHA-1</button>
+                <button class="chip" data-algo="SHA-256" onclick="selectAlgo(this)">SHA-256</button>
+                <button class="chip" data-algo="SHA-512" onclick="selectAlgo(this)">SHA-512</button>
+            </div>
+            <div class="action-row">
+                <button class="btn-primary" onclick="doHash()">Hash</button>
+                <button class="btn-secondary" onclick="hashAll()">Semua Algoritma</button>
+            </div>
+            <div id="h-result"></div>
+            <div class="divider"></div>
+            <div class="section-label">Info Algoritma Terpilih</div>
+            <div id="h-info" class="info-card"></div>
+        </div>
+
+        <!-- ══ RSA ══ -->
+        <div class="panel" id="panel-rsa">
+            <div class="tabs">
+                <button class="tab active" onclick="rsaTab('gen',this)">Generate Kunci</button>
+                <button class="tab" onclick="rsaTab('enc',this)">Enkripsi</button>
+                <button class="tab" onclick="rsaTab('dec',this)">Dekripsi</button>
+                <button class="tab" onclick="rsaTab('teori',this)">Teori</button>
+            </div>
+            <div id="r-gen">
+                <div class="section-label">Masukkan dua bilangan prima berbeda</div>
+                <div class="row">
+                    <div>
+                        <div class="section-label">p</div><input type="number" id="r-p" value="61" min="2"></div>
+                    <div>
+                        <div class="section-label">q</div><input type="number" id="r-q" value="53" min="2"></div>
+                </div>
+                <div class="action-row">
+                    <button class="btn-primary" onclick="genRSA()">Generate Kunci</button>
+                    <button class="btn-secondary" onclick="rndPrime()">Acak Prima</button>
+                </div>
+                <div id="r-keys" style="display:none">
+                    <div class="rsa-row" style="margin-top:1rem">
+                        <div>
+                            <div class="section-label">Kunci Publik (e, n)</div>
+                            <div class="info-card" id="r-pub"></div>
+                        </div>
+                        <div>
+                            <div class="section-label">Kunci Privat (d, n)</div>
+                            <div class="info-card" id="r-priv"></div>
+                        </div>
+                    </div>
+                    <div class="steps-box" style="margin-top:1rem">
+                        <div class="steps-header">Langkah-langkah Key Generation</div>
+                        <div id="r-gen-steps"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="r-enc" style="display:none">
+                <div class="input-group">
+                    <div class="section-label">Pesan m (angka, harus &lt; n)</div><input type="number" id="r-m" placeholder="Contoh: 42"></div>
+                <div class="row">
+                    <div>
+                        <div class="section-label">e (kunci publik)</div><input type="number" id="r-e" placeholder="17"></div>
+                    <div>
+                        <div class="section-label">n (modulus)</div><input type="number" id="r-n-e" placeholder="3233"></div>
+                </div>
+                <div class="action-row"><button class="btn-primary" onclick="rsaEnc()">Enkripsi</button></div>
+                <div id="r-enc-result" class="result-box" style="display:none">
+                    <div class="result-label">Ciphertext c = m^e mod n</div>
+                    <div class="result-value" id="r-enc-out"></div>
+                </div>
+                <div id="r-enc-steps" class="steps-box" style="display:none">
+                    <div class="steps-header">Langkah-langkah enkripsi RSA</div>
+                    <div id="r-enc-steps-body"></div>
+                </div>
+            </div>
+            <div id="r-dec" style="display:none">
+                <div class="input-group">
+                    <div class="section-label">Ciphertext c</div><input type="number" id="r-c" placeholder="Contoh: 2557"></div>
+                <div class="row">
+                    <div>
+                        <div class="section-label">d (kunci privat)</div><input type="number" id="r-d" placeholder="2753"></div>
+                    <div>
+                        <div class="section-label">n (modulus)</div><input type="number" id="r-n-d" placeholder="3233"></div>
+                </div>
+                <div class="action-row"><button class="btn-primary" onclick="rsaDec()">Dekripsi</button></div>
+                <div id="r-dec-result" class="result-box" style="display:none">
+                    <div class="result-label">Pesan m = c^d mod n</div>
+                    <div class="result-value" id="r-dec-out"></div>
+                </div>
+                <div id="r-dec-steps" class="steps-box" style="display:none">
+                    <div class="steps-header">Langkah-langkah dekripsi RSA</div>
+                    <div id="r-dec-steps-body"></div>
+                </div>
+            </div>
+            <div id="r-teori" style="display:none">
+                <div class="steps-box">
+                    <div class="steps-header">Konsep dasar RSA (Rivest–Shamir–Adleman, 1977)</div>
+                    <div class="step-item"><span class="hi">1. Pilih p dan q</span> — dua bilangan prima yang berbeda.<br>Keamanan RSA bergantung pada sulitnya memfaktorkan n = p × q (integer factorization problem).</div>
+                    <div class="step-item"><span class="hi">2. Hitung n = p × q</span> — disebut <span class="accent">modulus</span>, digunakan di kunci publik maupun privat.</div>
+                    <div class="step-item"><span class="hi">3. Hitung φ(n) = (p−1)(q−1)</span> — Euler's totient function, jumlah bilangan di [1,n] yang relatif prima dengan n.</div>
+                    <div class="step-item"><span class="hi">4. Pilih e</span> sehingga <span class="accent">1 &lt; e &lt; φ(n)</span> dan <span class="accent">gcd(e, φ(n)) = 1</span>.<br>e adalah bagian dari kunci publik. Nilai umum: e = 65537.</div>
+                    <div class="step-item"><span class="hi">5. Hitung d = e⁻¹ mod φ(n)</span> — invers modular, dihitung dengan Extended Euclidean Algorithm.<br><span class="warn">d adalah kunci privat — harus dirahasiakan!</span></div>
+                    <div class="step-item"><span class="hi">Enkripsi:</span> c = m<sup>e</sup> mod n &nbsp;|&nbsp; <span class="hi">Dekripsi:</span> m = c<sup>d</sup> mod n</div>
+                    <div class="step-item"><span class="hi">Properti penting:</span> (m<sup>e</sup>)<sup>d</sup> ≡ m (mod n) — dijamin oleh Euler's theorem.<br>Siapapun bisa mengenkripsi dengan kunci publik, hanya pemilik kunci privat yang bisa mendekripsi.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

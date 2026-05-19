@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CryptoQuest - Level 7: RSA Simplified (Hard)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/storage.js"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient(135deg, #FFF0F3 0%, #E0F4FF 100%); min-height: 100vh; }
+        .glass-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(16px); border: 2px solid #FFD1DC; border-radius: 1.5rem; }
+    </style>
+</head>
+<body class="bg-background text-on-background">
+    <header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 py-4 bg-white/80 backdrop-blur-md border-b-2 border-pink-100 shadow-sm max-w-7xl mx-auto">
+        <div class="flex items-center gap-4">
+            <button onclick="window.location.href='peta-level.html'" class="w-10 h-10 rounded-xl bg-pink-50 border-2 border-pink-100 flex items-center justify-center text-pink-400 hover:bg-pink-100 transition-all">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <div class="text-xl font-black text-pink-400 tracking-tighter">CryptoQuest</div>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="window.location.href='profil.html'" class="flex items-center gap-2 px-4 py-2 rounded-2xl bg-pink-400 text-white font-bold hover:bg-pink-500 transition-all shadow-lg">
+                <span id="player-avatar-lvl" class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+                <span id="player-name-lvl" class="text-label-sm font-label-sm uppercase">Agen</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="pt-32 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <section class="lg:col-span-12 mb-8">
+            <div class="flex items-end gap-6">
+                <div class="space-y-2">
+                    <span class="text-pink-400 font-bold tracking-widest uppercase text-xs">Misi Kriptografi</span>
+                    <h1 class="text-4xl md:text-5xl font-black text-gray-800">Level 7: RSA Expert</h1>
+                    <p class="text-lg text-gray-500 font-medium">Tantangan Matematika Modular dengan Angka Prima Besar.</p>
+                </div>
+            </div>
+        </section>
+
+        <aside class="lg:col-span-4 space-y-6">
+            <div class="glass-card p-6 space-y-4">
+                <h3 class="font-black text-gray-700 uppercase text-xs tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-pink-400">warning</span>
+                    Peringatan Ahli
+                </h3>
+                <div class="p-4 bg-yellow-50 rounded-2xl border border-yellow-200">
+                    <p class="text-xs text-yellow-700 leading-relaxed font-medium">
+                        Di level ini, nilai **Modulus (n)** akan lebih besar dari 26. Kamu harus lebih teliti dalam menghitung sisa bagi (mod) setiap karakter!
+                    </p>
+                </div>
+            </div>
+        </aside>
+
+        <div class="lg:col-span-8 space-y-6">
+            <div class="glass-card p-8 rounded-3xl space-y-6">
+                <h3 class="text-2xl font-black text-gray-800">Menuju Keamanan Dunia Nyata</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Semakin besar angka prima yang digunakan dalam RSA, semakin sulit bagi peretas untuk memecahkan kuncinya. Meskipun kita masih menggunakan angka yang relatif kecil, tantangannya akan menguji ketelitian perhitunganmu.
+                </p>
+                <div class="p-6 bg-gray-900 rounded-2xl font-mono text-sm text-blue-300 shadow-inner">
+                    Rumus Tetap Sama:<br>
+                    C = M^e mod n<br>
+                    M = C^d mod n<br><br>
+                    Petunjuk: Fokus pada angka Modulus yang diberikan di panel game!
+                </div>
+                <div class="flex justify-end pt-4">
+                    <button onclick="window.location.href='cipher_breaker_game.html?level=rsa_hard'" class="px-8 py-4 bg-pink-400 text-white font-black rounded-2xl uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-pink-200">
+                        Mulai Misi Expert
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!GameStorage.isLoggedIn()) {
+                window.location.href = 'login.html';
+            } else {
+                const data = GameStorage.load();
+                document.getElementById('player-name-lvl').textContent = data.playerName;
+            }
+        });
+    </script>
+</body>
+</html>

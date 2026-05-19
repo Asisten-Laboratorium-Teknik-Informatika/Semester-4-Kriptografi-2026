@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500&amp;family=Fira+Code:wght@400;450&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface": "#FFFFFF",
+            "inverse-surface": "#131313",
+            "surface-variant": "#FFF0F3",
+            "primary-fixed-dim": "#FF85A1",
+            "tertiary-fixed": "#72DDF7",
+            "on-secondary-fixed": "#001e2f",
+            "on-background": "#4A4A4A",
+            "surface-container-high": "#FFE1E9",
+            "on-tertiary-fixed": "#001f26",
+            "inverse-on-surface": "#FFFFFF",
+            "surface-container-low": "#FFF9FA",
+            "inverse-primary": "#E5738D",
+            "on-error-container": "#ffdad6",
+            "on-primary": "#FFFFFF",
+            "on-secondary": "#FFFFFF",
+            "surface-container-lowest": "#FFFFFF",
+            "on-primary-container": "#FF4D6D",
+            "outline-variant": "#FFD1DC",
+            "on-secondary-container": "#00344e",
+            "secondary-fixed": "#72DDF7",
+            "on-tertiary-container": "#005868",
+            "secondary": "#72DDF7",
+            "on-surface": "#4A4A4A",
+            "on-surface-variant": "#8E8E8E",
+            "surface-bright": "#FFFFFF",
+            "on-secondary-fixed-variant": "#004c6e",
+            "secondary-container": "#AEE2FF",
+            "primary-container": "#FFD1DC",
+            "surface-container-highest": "#FFB3C1",
+            "outline": "#FF85A1",
+            "surface-container": "#FFF5F7",
+            "surface-tint": "#FF85A1",
+            "error": "#FF4D6D",
+            "on-primary-fixed-variant": "#80001C",
+            "secondary-fixed-dim": "#72DDF7",
+            "on-tertiary-fixed-variant": "#004e5c",
+            "surface-dim": "#FFF0F3",
+            "on-error": "#FFFFFF",
+            "primary": "#FF85A1",
+            "tertiary": "#B588F7",
+            "background": "#FFF0F3",
+            "tertiary-container": "#D0BCFF",
+            "on-tertiary": "#FFFFFF",
+            "error-container": "#FFB3C1",
+            "primary-fixed": "#FFC0CB",
+            "tertiary-fixed-dim": "#B588F7",
+            "on-primary-fixed": "#590013"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "xs": "4px",
+            "lg": "48px",
+            "margin": "24px",
+            "sm": "12px",
+            "md": "24px",
+            "base": "8px",
+            "xl": "80px",
+            "gutter": "20px"
+          },
+          "fontFamily": {
+            "headline-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Space Grotesk"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-xl": ["Plus Jakarta Sans"],
+            "code-md": ["Fira Code"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+            "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "headline-xl": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+            "code-md": ["14px", {"lineHeight": "1.5", "fontWeight": "450"}],
+            "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+            "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/storage.js"></script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 133, 161, 0.3);
+      border-radius: 10px;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      border: 2px solid #FFD1DC;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.9);
+      border-color: #FF85A1;
+      box-shadow: 0 10px 30px -10px rgba(255, 133, 161, 0.2);
+    }
+    
+    .neon-path {
+      filter: drop-shadow(0 0 8px rgba(255, 133, 161, 0.4));
+      position: relative;
+      overflow: hidden;
+    }
+    .neon-path::after {
+      content: "";
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent, #FFB3C1, transparent);
+      animation: pathFlow 3s infinite linear;
+    }
+
+    @keyframes pathFlow {
+      0% { top: -100%; }
+      100% { top: 100%; }
+    }
+
+    .maskot-float {
+      filter: drop-shadow(0 0 12px rgba(60, 215, 255, 0.4));
+      animation: breathing 4s ease-in-out infinite;
+    }
+
+    @keyframes breathing {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-8px) scale(1.03); }
+    }
+
+    @keyframes pulseNeon {
+      0%, 100% { box-shadow: 0 0 20px rgba(60, 215, 255, 0.3), inset 0 0 10px rgba(60, 215, 255, 0.1); }
+      50% { box-shadow: 0 0 40px rgba(60, 215, 255, 0.6), inset 0 0 20px rgba(60, 215, 255, 0.2); }
+    }
+
+    .active-pulse {
+      animation: pulseNeon 2s infinite ease-in-out;
+    }
+
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.3s; }
+    .delay-3 { animation-delay: 0.5s; }
+    .delay-4 { animation-delay: 0.7s; }
+    .delay-5 { animation-delay: 0.9s; }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- LOGOUT MODAL -->
+<div id="logout-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 text-center space-y-4 shadow-2xl border-2 border-pink-100">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+            <span class="material-symbols-outlined text-red-400 text-3xl">logout</span>
+        </div>
+        <h3 class="text-xl font-black text-gray-700">Keluar dari CryptoQuest?</h3>
+        <p class="text-gray-500 text-sm">Progres Anda tersimpan. Anda dapat masuk kembali kapan saja.</p>
+        <div class="flex gap-3 pt-2">
+            <button onclick="document.getElementById('logout-modal').style.display='none'" class="flex-1 py-3 border-2 border-pink-200 text-pink-400 font-bold rounded-2xl">Batal</button>
+            <button onclick="confirmLogout()" class="flex-1 py-3 bg-red-400 text-white font-black rounded-2xl uppercase">Keluar</button>
+        </div>
+    </div>
+</div>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 py-3 bg-white/90 backdrop-blur-lg max-w-7xl mx-auto border-b-2 border-pink-100 shadow-sm">
+<div class="flex items-center gap-sm">
+<span class="text-headline-md font-headline-md font-bold tracking-tighter text-primary-fixed-dim">CryptoQuest</span>
+</div>
+<nav class="hidden md:flex items-center gap-md">
+<a class="font-body-md text-on-surface-variant hover:text-primary-fixed-dim transition-all" href="beranda-animasi.html">Materi</a>
+<a class="font-body-md text-primary border-b-2 border-primary pb-1 transition-all" href="peta-level.html">Peta Level</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary-fixed-dim transition-all" href="papan-peringkat.html">Papan Peringkat</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary-fixed-dim transition-all" href="tentang.html">Tentang</a>
+</nav>
+<div class="flex items-center gap-3">
+<button onclick="window.location.href='profil.html'" class="flex items-center gap-2 px-3 py-1 rounded-full bg-primary text-white font-bold hover:opacity-90 transition-all shadow-md text-sm">
+<div id="player-avatar-container" class="w-7 h-7 rounded-full overflow-hidden border-2 border-white/50 bg-white/20 flex items-center justify-center">
+    <span id="player-avatar" class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1;">account_circle</span>
+</div>
+<span id="player-name" class="text-xs uppercase tracking-wider">Agen</span>
+</button>
+<button onclick="document.getElementById('logout-modal').style.display='flex'" class="flex items-center gap-1 px-3 py-2 rounded-full border-2 border-red-200 text-red-400 font-bold hover:bg-red-50 transition-all text-xs uppercase">
+<span class="material-symbols-outlined text-[16px]">logout</span>Keluar
+</button>
+</div>
+</header>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const data = GameStorage.load();
+    if (!GameStorage.hasAnyAccount()) {
+        window.location.href = 'login.html?mode=register';
+    } else if (!GameStorage.isLoggedIn()) {
+        window.location.href = 'login.html';
+    } else {
+        document.getElementById('player-name').textContent = data.playerName;
+        const activeChar = GameStorage.getActiveCharacter();
+        const container = document.getElementById('player-avatar-container');
+        if (container) container.innerHTML = `<img src="${activeChar.img}" class="w-full h-full object-cover">`;
+    }
+  });
+  function confirmLogout() {
+    let data = GameStorage.load();
+    GameStorage.logout();
+    window.location.href = 'login.html';
+  }
+</script>
+<!-- Main Canvas -->
+<main class="min-h-screen pt-[100px] pb-[120px] px-margin max-w-5xl mx-auto relative overflow-hidden">
+<!-- Cyber Background Elements -->
+<div class="absolute inset-0 z-0 pointer-events-none">
+<div class="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-primary/5 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[10%] right-[5%] w-[300px] h-[300px] bg-secondary/5 rounded-full blur-[100px]"></div>
+</div>
+<!-- Header Section -->
+<div class="relative z-10 mb-xl text-center fade-in-up">
+<h1 class="text-headline-xl font-headline-xl text-on-surface mb-xs">Misi Kriptografi</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-2xl mx-auto">Selesaikan tantangan di setiap level untuk menguasai seni enkripsi dan membuka rahasia digital.</p>
+</div>
+<!-- Level Map (Winding Path) -->
+<div id="level-map" class="relative z-10 flex flex-col items-center gap-[120px] py-md">
+    <!-- Content will be injected by JavaScript -->
+</div>
+
+<script>
+    const LEVELS = [
+        { id: 1, name: 'Caesar Cipher (Easy)', desc: 'Pelajari teknik dasar pergeseran karakter (Shift kecil).', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAUKebGoUEsln3A4jmQxT-iYwIlRt22LsXrYkfh6Y4X_iQ-pjx2pVLFjtE4zQe16KPeNOEQAQy25_R_htu6WD_mypEO-8O15zaZl5WTrZogW1Uh8HgXAjrSvr8MzMXuYRgiNGejD3KiboY2CYUDyGMbtTbu_e_rOG--YMmRyrD4-6TLdXnasiSDYGbxJNPL27Mdls4fN5PSB_hQpGhNWxWlftWuwXOkZQac-w-Dqvgn1HXfRen7Dy4CYdNXMbfH4oXNFBHluXFp7HhZ', type: 'caesar_easy' },
+        { id: 2, name: 'Caesar Cipher (Hard)', desc: 'Tantangan pergeseran karakter dengan shift besar.', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAUKebGoUEsln3A4jmQxT-iYwIlRt22LsXrYkfh6Y4X_iQ-pjx2pVLFjtE4zQe16KPeNOEQAQy25_R_htu6WD_mypEO-8O15zaZl5WTrZogW1Uh8HgXAjrSvr8MzMXuYRgiNGejD3KiboY2CYUDyGMbtTbu_e_rOG--YMmRyrD4-6TLdXnasiSDYGbxJNPL27Mdls4fN5PSB_hQpGhNWxWlftWuwXOkZQac-w-Dqvgn1HXfRen7Dy4CYdNXMbfH4oXNFBHluXFp7HhZ', type: 'caesar_hard' },
+        { id: 3, name: 'Atbash Cipher', desc: 'Sandi kebalikan dari alfabet.', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDqf5GozAl8SFYX1Oq9EHuAejzfiqyxVLP72ylEGzqskp5LcqIMczLukOcJHYyo1tgXv79ifzG6UZ0AuiCcgkS9l7Z5k7pFwrpY9lzEw6I-Jh2g-NAvOEtVl6uHCkzecG8t7QGvo7Lmkcp7iOAdbZIBLT79G-zbDcX_4qHJL04dkTKQ8mWLdVx2_IGYS6s2wv0gRr6S_Pm-rYdRQqgC44m1Y2H-ynJWLolkjQMw_XFGfo1qAx7zoUEiH4CI1UNg010E54XVzdElsXsN', type: 'substitution' },
+        { id: 4, name: 'Vigenère Cipher (Easy)', desc: 'Keamanan dengan kunci polialfabetik (Kunci Pendek).', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBWMgGGABK_prKAp0UrBPLwsoZgVQECtI4Ire_BY-8prLoijfrRm_DipNFUa3yptae6286OP2uICh5dSilgFJtJr8dXLUoa-ySk8DBZJMHFfrTj-665oJCdBg3iXmZJCHBZ2a8jFosOQxXIRvuZQQpTUQ3X45SkwApmn6XedVUrQG4dBkoxOB4NVf3xa-LFFiIJ6deRkfJjwxd7D3ZXJXfPGkuQxA2vro8Z7hB_qse2pLYeNBBzUQjCyy_0b42f3qgf3S_VnBtDkIof', type: 'vigenere_easy' },
+        { id: 5, name: 'Vigenère Cipher (Hard)', desc: 'Keamanan ekstra dengan kunci panjang.', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBWMgGGABK_prKAp0UrBPLwsoZgVQECtI4Ire_BY-8prLoijfrRm_DipNFUa3yptae6286OP2uICh5dSilgFJtJr8dXLUoa-ySk8DBZJMHFfrTj-665oJCdBg3iXmZJCHBZ2a8jFosOQxXIRvuZQQpTUQ3X45SkwApmn6XedVUrQG4dBkoxOB4NVf3xa-LFFiIJ6deRkfJjwxd7D3ZXJXfPGkuQxA2vro8Z7hB_qse2pLYeNBBzUQjCyy_0b42f3qgf3S_VnBtDkIof', type: 'vigenere_hard' },
+        { id: 6, name: 'RSA Simplified (Easy)', desc: 'Enkripsi asimetri berbasis matematika modular.', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB-2umnJVyTcGYLSOOKsME6Mr-vxOu8cTxuoSY6Lcnv5AJP62kzCorCys_DeRF6qK5X8BVK7WKjg_FaZXR7gTARnobZxB0pXPYJqSJSAvMdfrzHtj2X2_dTwoLYmHiuy1iF6fxrr4Yjkn739VUrkKc54loEgWvqWis2b7hiKbAi14QQXfabahzKegWNl0mMXvsxrHzhA-SMXB8MFOkHi-zcSYZlYXOGCwGcWFrjfVo4zuySUeCVHVmvgz5Kj-2qURsAP2gpAHxVs625', type: 'rsa_easy', url: 'level-6.html' },
+        { id: 7, name: 'RSA Simplified (Hard)', desc: 'Matematika modular dengan prima lebih besar.', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB-2umnJVyTcGYLSOOKsME6Mr-vxOu8cTxuoSY6Lcnv5AJP62kzCorCys_DeRF6qK5X8BVK7WKjg_FaZXR7gTARnobZxB0pXPYJqSJSAvMdfrzHtj2X2_dTwoLYmHiuy1iF6fxrr4Yjkn739VUrkKc54loEgWvqWis2b7hiKbAi14QQXfabahzKegWNl0mMXvsxrHzhA-SMXB8MFOkHi-zcSYZlYXOGCwGcWFrjfVo4zuySUeCVHVmvgz5Kj-2qURsAP2gpAHxVs625', type: 'rsa_hard', url: 'level-7.html' },
+        { id: 8, name: 'Cryptanalysis', desc: 'Misi Master: Pecahkan sandi tanpa mengetahui kuncinya!', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCHaVudC2f79vgkmu29mfU1jHabAf18o9wi6vHzbRg2dyn0BFpB4QuDr90-8EuXclk8dOHN6vVgh7M5HeZUdiSdqxEzF7ROhD3jsTeYp19268k6SkyUHy6EmWI4Zn4diZDJ3k2AQxJZGMOLY2yRgacb62mJ-t5f-doY7VzpmJMyhushkbc2V5k8kP6dfiUo9BWI85CPHxtpDEcQRE7CE04i1KxYFkF0EbXIAwU9cAuElMYgLp2QGfXJwuA6r8jjOC_ESuiY7A03aLnX', type: 'cryptanalysis', url: 'level-8.html' }
+    ];
+
+    function renderMap() {
+        const map = document.getElementById('level-map');
+        const progress = GameStorage.load();
+        
+        map.innerHTML = LEVELS.map((level, index) => {
+            const isUnlocked = GameStorage.isLevelUnlocked(level.id);
+            const isCompleted = GameStorage.isLevelCompleted(level.id);
+            const isActive = isUnlocked && !isCompleted;
+            const alignment = index % 2 === 0 ? 'justify-start' : 'md:flex-row-reverse justify-start';
+            const connectorClass = index < LEVELS.length - 1 ? 
+                `absolute top-[240px] left-1/2 -translate-x-1/2 ${index % 2 === 0 ? 'md:translate-x-[-180px]' : 'md:translate-x-[180px]'} h-[120px] w-1 bg-gradient-to-b from-primary to-primary-container neon-path ${isUnlocked ? 'opacity-50' : 'opacity-10 grayscale'}` : '';
+
+            return `
+                <div class="flex flex-col md:flex-row items-center gap-md group w-full max-w-3xl ${alignment} fade-in-up relative z-10 ${!isUnlocked ? 'opacity-50 grayscale' : ''}" style="animation-delay: ${index * 0.2}s">
+                    <div class="relative z-10">
+                        <div class="w-32 h-32 rounded-full glass-card flex items-center justify-center border-primary bg-white ${isActive ? 'active-pulse ring-4 ring-primary/20' : ''}">
+                            <img class="w-20 h-20 maskot-float" src="${level.icon}" alt="${level.name}">
+                        </div>
+                        ${isCompleted ? `
+                            <div class="absolute -top-2 -right-2 bg-primary text-on-primary px-2 py-1 rounded-lg text-label-sm font-label-sm flex items-center gap-1 z-20">
+                                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span> SELESAI
+                            </div>
+                        ` : isActive ? `
+                            <div class="absolute -top-4 -right-4 bg-primary-container text-on-primary-container px-3 py-2 rounded-xl text-label-sm font-label-sm flex items-center gap-2 shadow-lg animate-bounce z-20">
+                                <span class="material-symbols-outlined text-[18px]">play_circle</span> AKTIF
+                            </div>
+                        ` : `
+                            <div class="absolute inset-0 flex items-center justify-center z-20">
+                                <span class="material-symbols-outlined text-surface-variant text-[40px]">lock</span>
+                            </div>
+                        `}
+                    </div>
+                    <div class="glass-card p-md rounded-3xl flex-1 max-w-md ${isUnlocked ? 'border-primary/40' : 'border-outline-variant/30'} relative z-10 border-b-4 border-pastel-pink bg-white/90">
+                        <div class="flex justify-between items-start mb-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="text-label-sm font-label-sm text-primary uppercase font-black">Level ${level.id}</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">Misi</span>
+                            </div>
+                            <div class="flex gap-xs">
+                                ${Array(3).fill(0).map((_, i) => `
+                                    <span class="material-symbols-outlined text-[16px] ${isCompleted || (isActive && i < 1) ? 'text-vibrant-pink' : 'text-gray-200'}" style="font-variation-settings: 'FILL' 1;">star</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <h3 class="text-headline-md font-headline-md mb-xs font-black ${isUnlocked ? 'text-gray-700' : 'text-gray-400'}">${level.name}</h3>
+                        <p class="text-body-md font-body-md text-gray-500 mb-md font-medium leading-tight">${level.desc}</p>
+                        ${isUnlocked ? `
+                            ${isCompleted ? `
+                            <button class="w-full py-4 bg-white text-pink-500 font-black rounded-2xl text-base border-2 border-pink-400 active:translate-y-1 transition-all uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-pink-50" 
+                                    onclick="window.location.href='${level.url || `cipher_breaker_game.html?level=${level.type}`}'">
+                                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">replay</span>
+                                <span>Ulangi Misi</span>
+                            </button>
+                            ` : `
+                            <button class="w-full py-4 font-black rounded-2xl text-base border-b-4 active:border-b-0 active:translate-y-1 transition-all uppercase tracking-widest flex items-center justify-center gap-3 shadow-lg hover:shadow-xl" 
+                                    style="background:#E5738D; border-color:#9B3A55; color:#FFFFFF;"
+                                    onmouseover="this.style.background='#D45F7A'"
+                                    onmouseout="this.style.background='#E5738D'"
+                                    onclick="window.location.href='${level.url || `cipher_breaker_game.html?level=${level.type}`}'">
+                                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;color:#FFFFFF;">play_circle</span>
+                                <span style="color:#FFFFFF;font-size:1rem;font-weight:900;letter-spacing:0.1em;">Mulai Misi</span>
+                            </button>
+                            `}
+                        ` : `
+                            <div class="text-center text-label-sm text-gray-400 font-bold uppercase tracking-widest py-2">Misi Terkunci</div>
+                        `}
+                    </div>
+                </div>
+                ${index < LEVELS.length - 1 ? `<div class="absolute h-[240px] w-1.5 bg-pink-300 shadow-[0_0_15px_rgba(255,182,193,0.6)] z-0 ${isUnlocked ? 'opacity-100' : 'opacity-20 grayscale'}" style="top: ${(index * 240) + 160}px; left: 50%; transform: translateX(-50%) ${index % 2 === 0 ? 'md:translateX(-180px)' : 'md:translateX(180px)'}"></div>` : ''}
+            `;
+        }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', renderMap);
+</script>
+</main>
+<!-- BottomNavBar Shell (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center px-4 py-4 bg-white/95 backdrop-blur-xl border-t-2 border-pastel-pink shadow-[0_-8px_30px_rgba(255,133,161,0.15)] rounded-t-3xl">
+<button onclick="window.location.href='peta-level.html'" class="flex flex-col items-center justify-center text-vibrant-pink">
+<span class="material-symbols-outlined fill-1">map</span>
+<span class="font-bold text-[10px] uppercase">Peta</span>
+</button>
+<button onclick="window.location.href='beranda-animasi.html'" class="flex flex-col items-center justify-center text-gray-400 hover:text-vibrant-pink transition-colors">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-bold text-[10px] uppercase">Quest</span>
+</button>
+<button onclick="window.location.href='papan-peringkat.html'" class="flex flex-col items-center justify-center text-gray-400 hover:text-vibrant-pink transition-colors">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-bold text-[10px] uppercase">Skor</span>
+</button>
+<button onclick="window.location.href='tentang.html'" class="flex flex-col items-center justify-center text-gray-400 hover:text-vibrant-pink transition-colors">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-bold text-[10px] uppercase">Profil</span>
+</button>
+</nav>
+<!-- Footer Shell -->
+<footer class="w-full flex flex-col md:flex-row justify-between items-center px-margin gap-md py-lg bg-surface-container-lowest border-t border-outline-variant/30 relative z-10">
+<div class="flex flex-col items-center md:items-start gap-xs">
+<span class="text-headline-sm font-headline-sm text-primary">CryptoQuest</span>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-80">© 2026 CryptoQuest. Belajar Kriptografi dengan Seru.</p>
+</div>
+<div class="flex gap-md">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-tertiary transition-colors" href="#">Kebijakan Privasi</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-tertiary transition-colors" href="#">Syarat Layanan</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-tertiary transition-colors" href="#">Bantuan</a>
+</div>
+</footer>
+</body></html>

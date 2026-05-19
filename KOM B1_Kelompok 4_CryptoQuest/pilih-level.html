@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500&amp;family=Fira+Code:wght@400;450&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface": "#131313",
+            "inverse-surface": "#e5e2e1",
+            "surface-variant": "#353534",
+            "primary-fixed-dim": "#3cd7ff",
+            "tertiary-fixed": "#acedff",
+            "on-secondary-fixed": "#001e2f",
+            "on-background": "#e5e2e1",
+            "surface-container-high": "#2a2a2a",
+            "on-tertiary-fixed": "#001f26",
+            "inverse-on-surface": "#313030",
+            "surface-container-low": "#1c1b1b",
+            "inverse-primary": "#00677e",
+            "on-error-container": "#ffdad6",
+            "on-primary": "#003642",
+            "on-secondary": "#00344d",
+            "surface-container-lowest": "#0e0e0e",
+            "on-primary-container": "#00586b",
+            "outline-variant": "#3c494e",
+            "on-secondary-container": "#00344e",
+            "secondary-fixed": "#c9e6ff",
+            "on-tertiary-container": "#005868",
+            "secondary": "#89ceff",
+            "on-surface": "#e5e2e1",
+            "on-surface-variant": "#bbc9cf",
+            "surface-bright": "#3a3939",
+            "on-secondary-fixed-variant": "#004c6e",
+            "secondary-container": "#00a2e6",
+            "primary-container": "#00d4ff",
+            "surface-container-highest": "#353534",
+            "outline": "#859398",
+            "surface-container": "#201f1f",
+            "surface-tint": "#3cd7ff",
+            "error": "#ffb4ab",
+            "on-primary-fixed-variant": "#004e5f",
+            "secondary-fixed-dim": "#89ceff",
+            "on-tertiary-fixed-variant": "#004e5c",
+            "surface-dim": "#131313",
+            "on-error": "#690005",
+            "primary": "#a8e8ff",
+            "tertiary": "#9eeaff",
+            "background": "#131313",
+            "tertiary-container": "#46d3f2",
+            "on-tertiary": "#003640",
+            "error-container": "#93000a",
+            "primary-fixed": "#b4ebff",
+            "tertiary-fixed-dim": "#4cd7f6",
+            "on-primary-fixed": "#001f27"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "xs": "4px",
+            "lg": "48px",
+            "margin": "24px",
+            "sm": "12px",
+            "md": "24px",
+            "base": "8px",
+            "xl": "80px",
+            "gutter": "20px"
+          },
+          "fontFamily": {
+            "headline-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Space Grotesk"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-xl": ["Plus Jakarta Sans"],
+            "code-md": ["Fira Code"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+            "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "headline-xl": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+            "code-md": ["14px", {"lineHeight": "1.5", "fontWeight": "450"}],
+            "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+            "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(60, 215, 255, 0.3);
+      border-radius: 10px;
+    }
+    .glass-card {
+      background: rgba(32, 31, 31, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(168, 232, 255, 0.15);
+    }
+    .neon-path {
+      filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
+    }
+    .maskot-float {
+      filter: drop-shadow(0 0 12px rgba(60, 215, 255, 0.4));
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin py-base bg-surface/10 backdrop-blur-md max-w-7xl mx-auto border-b border-primary/30 shadow-[0_0_20px_rgba(60,215,255,0.1)]">
+<div class="flex items-center gap-sm">
+<span class="text-headline-md font-headline-md font-bold tracking-tighter text-primary-fixed-dim drop-shadow-[0_0_8px_rgba(60,215,255,0.4)]">CryptoQuest</span>
+</div>
+<nav class="hidden md:flex items-center gap-md">
+<a class="font-body-md text-on-surface-variant hover:text-primary-fixed-dim hover:drop-shadow-[0_0_5px_rgba(60,215,255,0.6)] transition-all" href="beranda-animasi.html">Materi</a>
+<a class="font-body-md text-primary border-b-2 border-primary pb-1 hover:text-primary-fixed-dim hover:drop-shadow-[0_0_5px_rgba(60,215,255,0.6)] transition-all" href="peta-level.html">Peta Level</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary-fixed-dim hover:drop-shadow-[0_0_5px_rgba(60,215,255,0.6)] transition-all" href="papan-peringkat.html">Papan Peringkat</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary-fixed-dim hover:drop-shadow-[0_0_5px_rgba(60,215,255,0.6)] transition-all" href="#">Tentang</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<div class="flex items-center gap-xs px-sm py-1 rounded-full bg-primary/10 border border-primary/20">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+<span class="text-label-sm font-label-sm text-primary uppercase">Masuk</span>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="min-h-screen pt-[100px] pb-[120px] px-margin max-w-5xl mx-auto relative overflow-hidden">
+<!-- Cyber Background Elements -->
+<div class="absolute inset-0 z-0 pointer-events-none">
+<div class="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-primary/5 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[10%] right-[5%] w-[300px] h-[300px] bg-secondary/5 rounded-full blur-[100px]"></div>
+</div>
+<!-- Header Section -->
+<div class="relative z-10 mb-xl text-center">
+<h1 class="text-headline-xl font-headline-xl text-on-surface mb-xs">Misi Kriptografi</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-2xl mx-auto">Selesaikan tantangan di setiap level untuk menguasai seni enkripsi dan membuka rahasia digital.</p>
+</div>
+<!-- Level Map (Winding Path) -->
+<div class="relative z-10 flex flex-col items-center gap-[120px] py-md">
+<!-- LEVEL 1: Caesar Cipher (Unlocked) -->
+<div class="flex flex-col md:flex-row items-center gap-md group w-full max-w-3xl justify-start">
+<div class="relative">
+<div class="w-32 h-32 rounded-full glass-card flex items-center justify-center border-primary-fixed-dim shadow-[0_0_30px_rgba(60,215,255,0.2)]">
+<img class="w-20 h-20 maskot-float" data-alt="A cute, stylized digital fox mascot named Rubah with vibrant orange and white fur, wearing high-tech glowing cyan goggles. The fox has an adorable expression and is sitting in a friendly pose. The background is a dark, sleek cyberpunk setting with soft blue neon ambient lighting and a glassmorphism aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUKebGoUEsln3A4jmQxT-iYwIlRt22LsXrYkfh6Y4X_iQ-pjx2pVLFjtE4zQe16KPeNOEQAQy25_R_htu6WD_mypEO-8O15zaZl5WTrZogW1Uh8HgXAjrSvr8MzMXuYRgiNGejD3KiboY2CYUDyGMbtTbu_e_rOG--YMmRyrD4-6TLdXnasiSDYGbxJNPL27Mdls4fN5PSB_hQpGhNWxWlftWuwXOkZQac-w-Dqvgn1HXfRen7Dy4CYdNXMbfH4oXNFBHluXFp7HhZ"/>
+</div>
+<div class="absolute -top-2 -right-2 bg-primary text-on-primary px-2 py-1 rounded-lg text-label-sm font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span> SELESAI
+          </div>
+</div>
+<div class="glass-card p-md rounded-xl flex-1 max-w-md border-primary/40 relative">
+<div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rotate-45 glass-card border-l-primary/40 border-b-primary/40 md:block hidden"></div>
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-label-sm text-primary uppercase">Level 1</span>
+<div class="flex gap-xs">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-on-surface-variant/30 text-[16px]">star</span>
+<span class="material-symbols-outlined text-on-surface-variant/30 text-[16px]">star</span>
+</div>
+</div>
+<h3 class="text-headline-md font-headline-md mb-xs text-on-surface">Caesar Cipher</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-md">Pelajari teknik dasar pergeseran karakter yang digunakan Julius Caesar.</p>
+<button class="w-full py-2 bg-primary/20 text-primary border border-primary/30 rounded-lg text-label-sm font-label-sm hover:bg-primary/30 transition-all uppercase">Ulangi Materi</button>
+</div>
+</div>
+<!-- Connecting Path 1-2 -->
+<div class="absolute top-[240px] left-1/2 -translate-x-1/2 md:translate-x-[-180px] h-[120px] w-1 bg-gradient-to-b from-primary to-primary-container neon-path opacity-50"></div>
+<!-- LEVEL 2: Vigenere (Current) -->
+<div class="flex flex-col md:flex-row-reverse items-center gap-md group w-full max-w-3xl justify-start">
+<div class="relative">
+<div class="w-40 h-40 rounded-full glass-card flex items-center justify-center border-primary ring-4 ring-primary/20 shadow-[0_0_40px_rgba(60,215,255,0.4)] animate-pulse">
+<img class="w-28 h-28 maskot-float" data-alt="A cute, wise owl mascot named Burung Hantu with deep blue feathers and large glowing amber eyes. The owl is wearing a small digital headset with a holographic interface floating nearby. It is perched on a sleek, metallic branch in a futuristic dark room with cyan glowing accents and soft bokeh effects." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWMgGGABK_prKAp0UrBPLwsoZgVQECtI4Ire_BY-8prLoijfrRm_DipNFUa3yptae6286OP2uICh5dSilgFJtJr8dXLUoa-ySk8DBZJMHFfrTj-665oJCdBg3iXmZJCHBZ2a8jFosOQxXIRvuZQQpTUQ3X45SkwApmn6XedVUrQG4dBkoxOB4NVf3xa-LFFiIJ6deRkfJjwxd7D3ZXJXfPGkuQxA2vro8Z7hB_qse2pLYeNBBzUQjCyy_0b42f3qgf3S_VnBtDkIof"/>
+</div>
+<div class="absolute -top-4 -right-4 bg-primary-container text-on-primary-container px-3 py-2 rounded-xl text-label-sm font-label-sm flex items-center gap-2 shadow-lg">
+<span class="material-symbols-outlined text-[18px]">play_circle</span> AKTIF
+          </div>
+</div>
+<div class="glass-card p-md rounded-xl flex-1 max-w-md border-primary shadow-[0_0_20px_rgba(60,215,255,0.15)] relative">
+<div class="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rotate-45 glass-card border-r-primary border-t-primary md:block hidden"></div>
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-label-sm text-primary uppercase">Level 2</span>
+<div class="flex gap-xs">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-on-surface-variant/30 text-[16px]">star</span>
+</div>
+</div>
+<h3 class="text-headline-md font-headline-md mb-xs text-primary-fixed-dim">Vigenere Cipher</h3>
+<p class="text-body-md font-body-md text-on-surface mb-md">Tingkatkan keamanan dengan kunci polialfabetik yang lebih kompleks.</p>
+<div class="w-full h-1 bg-surface-variant rounded-full mb-md overflow-hidden">
+<div class="h-full w-2/3 bg-gradient-to-r from-primary-container to-primary shadow-[0_0_10px_rgba(60,215,255,0.5)]"></div>
+</div>
+<button class="w-full py-3 bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-container font-bold rounded-lg text-label-sm font-label-sm hover:scale-[1.02] transition-all uppercase shadow-[0_4px_15px_rgba(0,162,230,0.3)]">Lanjutkan Misi</button>
+</div>
+</div>
+<!-- Connecting Path 2-3 -->
+<div class="absolute top-[500px] left-1/2 -translate-x-1/2 md:translate-x-[180px] h-[120px] w-1 bg-gradient-to-b from-primary-container to-surface-variant neon-path opacity-30"></div>
+<!-- LEVEL 3: Substitution (Locked) -->
+<div class="flex flex-col md:flex-row items-center gap-md group w-full max-w-3xl justify-start opacity-60">
+<div class="relative">
+<div class="w-32 h-32 rounded-full glass-card flex items-center justify-center border-outline-variant grayscale">
+<img class="w-20 h-20 opacity-50" data-alt="A cute digital cat mascot named Kucing, rendered in a high-quality 3D style but currently in grayscale with a matte finish. The cat is small and playful with a digital collar. The environment is a dark, minimalist cyberpunk room with subtle geometric shadows and very dim, cool-toned lighting, reflecting a locked or inactive state." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqf5GozAl8SFYX1Oq9EHuAejzfiqyxVLP72ylEGzqskp5LcqIMczLukOcJHYyo1tgXv79ifzG6UZ0AuiCcgkS9l7Z5k7pFwrpY9lzEw6I-Jh2g-NAvOEtVl6uHCkzecG8t7QGvo7Lmkcp7iOAdbZIBLT79G-zbDcX_4qHJL04dkTKQ8mWLdVx2_IGYS6s2wv0gRr6S_Pm-rYdRQqgC44m1Y2H-ynJWLolkjQMw_XFGfo1qAx7zoUEiH4CI1UNg010E54XVzdElsXsN"/>
+</div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-surface-variant text-[40px]">lock</span>
+</div>
+</div>
+<div class="glass-card p-md rounded-xl flex-1 max-w-md border-outline-variant/30 relative">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">Level 3</span>
+<div class="flex gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant/30 text-[16px]">star</span>
+<span class="material-symbols-outlined text-on-surface-variant/30 text-[16px]">star</span>
+<span class="material-symbols-outlined text-on-surface-variant/30 text-[16px]">star</span>
+</div>
+</div>
+<h3 class="text-headline-md font-headline-md mb-xs text-on-surface-variant">Substitution Cipher</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Ganti setiap alfabet dengan simbol unik untuk menyembunyikan pesan.</p>
+</div>
+</div>
+<!-- Connecting Path 3-4 -->
+<div class="absolute top-[760px] left-1/2 -translate-x-1/2 md:translate-x-[-180px] h-[120px] w-1 bg-surface-variant opacity-20"></div>
+<!-- LEVEL 4: Transposition (Locked) -->
+<div class="flex flex-col md:flex-row-reverse items-center gap-md group w-full max-w-3xl justify-start opacity-50">
+<div class="relative">
+<div class="w-32 h-32 rounded-full glass-card flex items-center justify-center border-outline-variant grayscale">
+<img class="w-20 h-20 opacity-40" data-alt="A chubby and cute digital panda mascot named Panda, shown in a sleek 3D grayscale style. The panda is holding a holographic bamboo stick. The scene is set in a dark, high-tech laboratory with low-key lighting, featuring glass surfaces and faint blue grid patterns on the walls, conveying a futuristic and locked aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-2umnJVyTcGYLSOOKsME6Mr-vxOu8cTxuoSY6Lcnv5AJP62kzCorCys_DeRF6qK5X8BVK7WKjg_FaZXR7gTARnobZxB0pXPYJqSJSAvMdfrzHtj2X2_dTwoLYmHiuy1iF6fxrr4Yjkn739VUrkKc54loEgWvqWis2b7hiKbAi14QQXfabahzKegWNl0mMXvsxrHzhA-SMXB8MFOkHi-zcSYZlYXOGCwGcWFrjfVo4zuySUeCVHVmvgz5Kj-2qURsAP2gpAHxVs625"/>
+</div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-surface-variant text-[40px]">lock</span>
+</div>
+</div>
+<div class="glass-card p-md rounded-xl flex-1 max-w-md border-outline-variant/30 relative">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">Level 4</span>
+<div class="flex gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant/30 text-[16px]">star</span>
+<span class="material-symbols-outlined text-on-surface-variant/30 text-[16px]">star</span>
+<span class="material-symbols-outlined text-on-surface-variant/30 text-[16px]">star</span>
+</div>
+</div>
+<h3 class="text-headline-md font-headline-md mb-xs text-on-surface-variant">Transposition Cipher</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Ubah urutan karakter tanpa mengganti isinya dengan teknik anagram sistematis.</p>
+</div>
+</div>
+<!-- Connecting Path 4-5 -->
+<div class="absolute top-[1020px] left-1/2 -translate-x-1/2 md:translate-x-[180px] h-[120px] w-1 bg-surface-variant opacity-20"></div>
+<!-- LEVEL 5: Cryptanalysis (Locked) -->
+<div class="flex flex-col md:flex-row items-center gap-md group w-full max-w-3xl justify-start opacity-40">
+<div class="relative">
+<div class="w-32 h-32 rounded-full glass-card flex items-center justify-center border-outline-variant grayscale">
+<img class="w-20 h-20 opacity-30" data-alt="A small, cute digital dragon mascot named Naga with tiny wings and glowing horns, presented in a grayscale 3D render. The dragon is curled up in a sleeping pose. The background is a sophisticated dark cyber-vault with heavy metal doors and subtle blue light leaking through the gaps, illustrating a final, high-security level that is currently locked." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI_sbnPGAoElYLAgdZ2eYz6nDNnOmOib22plOoPzddQrQwyNy01tKy-uwtFD-MF_nJ3l7I2yo93B-K-AnvjWZBWpOKvPEoJ6Dk8tZdAHifLu2gO-rQtPNV46JyIMdGcfYhcbV9nReX4eAxg2_J-jCbkK9ZYcQqJXE271Rccc8FK4L6IrM-Jbdw3OZ2uMeOwYA11QbWOFRVf6_tPrth-D3fGtXyOsIKGdf7yfaq1CdkhsMb3IZ1dPedG5PRu63KtH2JlMp69n-4jkVn"/>
+</div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-surface-variant text-[40px]">lock</span>
+</div>
+</div>
+<div class="glass-card p-md rounded-xl flex-1 max-w-md border-outline-variant/30 relative">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">Level 5</span>
+<div class="flex gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant/30 text-[16px]">star</span>
+<span class="material-symbols-outlined text-on-surface-variant/30 text-[16px]">star</span>
+<span class="material-symbols-outlined text-on-surface-variant/30 text-[16px]">star</span>
+</div>
+</div>
+<h3 class="text-headline-md font-headline-md mb-xs text-on-surface-variant">Cryptanalysis</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Uji keahlianmu dengan memecahkan kode rahasia tanpa memiliki kunci utamanya.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Shell (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container/30 backdrop-blur-xl border-t border-primary/20 shadow-[0_-4px_20px_rgba(0,162,230,0.1)] rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:opacity-100 hover:text-primary transition-opacity">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-sm text-label-sm">Peta</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container/40 text-primary-fixed-dim rounded-xl px-4 py-1 ring-1 ring-primary/50 shadow-[0_0_15px_rgba(60,215,255,0.2)]">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-label-sm text-label-sm">Quest</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:opacity-100 hover:text-primary transition-opacity">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-label-sm text-label-sm">Peringkat</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:opacity-100 hover:text-primary transition-opacity">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-sm text-label-sm">Profil</span>
+</div>
+</nav>
+<!-- Footer Shell -->
+<footer class="w-full flex flex-col md:flex-row justify-between items-center px-margin gap-md py-lg bg-surface-container-lowest border-t border-outline-variant/30 relative z-10">
+<div class="flex flex-col items-center md:items-start gap-xs">
+<span class="text-headline-sm font-headline-sm text-primary">CryptoQuest</span>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-80">© 2026 CryptoQuest. Belajar Kriptografi dengan Seru.</p>
+</div>
+<div class="flex gap-md">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-tertiary transition-colors" href="#">Kebijakan Privasi</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-tertiary transition-colors" href="#">Syarat Layanan</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-tertiary transition-colors" href="#">Bantuan</a>
+</div>
+</footer>
+</body></html>
