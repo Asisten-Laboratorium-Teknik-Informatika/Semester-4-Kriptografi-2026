@@ -123,6 +123,90 @@
         /* Help Modal */
         #help-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); z-index:300; align-items:center; justify-content:center; }
         .help-content { background:white; border-radius:1.5rem; padding:2rem; max-width:400px; width:100%; margin:1rem; border:2px solid #FFD1DC; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1); }
+
+        /* ===== RESULT SCREEN ===== */
+        #screen-result { background: linear-gradient(160deg, #fff5f8 0%, #fff0f8 50%, #f0f5ff 100%); }
+        #screen-result.failed-bg { background: linear-gradient(160deg, #fff5f5 0%, #fff0f0 50%, #fdf0f0 100%); }
+
+        /* Confetti */
+        .confetti-container { position:fixed; inset:0; pointer-events:none; z-index:50; overflow:hidden; }
+        .confetti-piece {
+            position:absolute; top:-20px;
+            width:10px; height:14px; opacity:0;
+            animation: confettiFall linear forwards;
+            border-radius:2px;
+        }
+        @keyframes confettiFall {
+            0%   { transform: translateY(0) rotate(0deg) scaleX(1);   opacity:1; }
+            80%  { opacity:1; }
+            100% { transform: translateY(110vh) rotate(720deg) scaleX(-1); opacity:0; }
+        }
+
+        /* Trophy / Skull bounce */
+        @keyframes resultIconBounce {
+            0%,100% { transform: scale(1) rotate(-3deg); }
+            25%     { transform: scale(1.15) rotate(3deg); }
+            50%     { transform: scale(1.05) rotate(-2deg); }
+            75%     { transform: scale(1.1)  rotate(2deg); }
+        }
+        .result-icon-anim { animation: resultIconBounce 1.6s ease-in-out infinite; display:inline-block; }
+
+        /* Stars */
+        @keyframes starPop {
+            0%   { transform: scale(0) rotate(-30deg); opacity:0; }
+            60%  { transform: scale(1.3) rotate(5deg);  opacity:1; }
+            100% { transform: scale(1) rotate(0deg);   opacity:1; }
+        }
+        .star-anim { animation: starPop 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        .star-delay-1 { animation-delay: 0.1s; }
+        .star-delay-2 { animation-delay: 0.25s; }
+        .star-delay-3 { animation-delay: 0.4s; }
+
+        /* Stat card slide-in */
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity:0; }
+            to   { transform: translateY(0);    opacity:1; }
+        }
+        .stat-card { animation: slideUp 0.5s ease both; }
+        .stat-delay-1 { animation-delay: 0.15s; }
+        .stat-delay-2 { animation-delay: 0.3s; }
+        .stat-delay-3 { animation-delay: 0.45s; }
+
+        /* Score count-up glow */
+        @keyframes scoreGlow {
+            from { text-shadow: 0 0 0px rgba(255,133,161,0); }
+            to   { text-shadow: 0 0 24px rgba(255,133,161,0.6), 0 0 8px rgba(255,133,161,0.4); }
+        }
+        .score-glow { animation: scoreGlow 0.8s ease forwards 0.6s; }
+
+        /* Title entrance */
+        @keyframes titleSlide {
+            from { transform: translateY(-20px) scale(0.9); opacity:0; }
+            to   { transform: translateY(0)     scale(1);   opacity:1; }
+        }
+        .title-anim { animation: titleSlide 0.5s cubic-bezier(.22,.68,0,1.2) both; }
+
+        /* Result screen centering */
+        #screen-result:not(.hidden) {
+            display: flex !important;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Next Level button glow */
+        .btn-next-win {
+            background: linear-gradient(135deg, #FF4D94 0%, #FF85A1 50%, #C026D3 100%);
+            box-shadow: 0 8px 32px rgba(255, 77, 148, 0.5), 0 2px 8px rgba(192, 38, 211, 0.3);
+            transition: all 0.2s ease;
+        }
+        .btn-next-win:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(255, 77, 148, 0.65), 0 4px 12px rgba(192, 38, 211, 0.4);
+        }
+        .btn-next-win:active { transform: translateY(1px) scale(0.98); }
     </style>
 </head>
 <body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen">
@@ -314,9 +398,6 @@
         </div>
     </div>
 
-        </div>
-    </div>
-
     <!-- HELP MODAL -->
     <div id="help-modal">
         <div class="help-content space-y-4">
@@ -329,62 +410,92 @@
         </div>
     </div>
 
+    <!-- CONFETTI CONTAINER -->
+    <div id="confetti-container" class="confetti-container"></div>
+
     <!-- RESULT SCREEN -->
-    <!-- RESULT SCREEN -->
-    <div id="screen-result" class="relative z-10 flex-1 hidden flex-col items-center justify-center p-6 animate-fade-in">
-        <div class="w-full max-w-2xl space-y-8 flex flex-col items-center">
-            
-            <!-- Header Section -->
-            <div class="text-center space-y-4">
-                <div id="result-icon" class="text-8xl filter drop-shadow-[0_0_20px_rgba(255,215,0,0.5)] animate-bounce">🏆</div>
-                <div class="space-y-2">
-                    <h2 id="result-title" class="text-5xl md:text-6xl font-black tracking-tight text-vibrant-pink">MISSION SUCCESS!</h2>
-                    <p id="result-score-text" class="text-gray-500 font-bold text-lg">Skor Akhir: <span id="result-score-val" class="text-vibrant-pink text-2xl">1746</span></p>
+    <div id="screen-result" class="relative z-10 flex-1 hidden flex-col items-center justify-center">
+        <div class="w-full max-w-lg flex flex-col items-center gap-5">
+
+            <!-- Trophy / Skull -->
+            <div id="result-icon" class="text-7xl md:text-8xl result-icon-anim">🏆</div>
+
+            <!-- Title -->
+            <div class="text-center title-anim">
+                <h2 id="result-title" class="text-4xl md:text-5xl font-black tracking-tight leading-none">MISSION SUCCESS!</h2>
+                <p id="result-subtitle" class="text-sm font-semibold text-gray-400 mt-1 uppercase tracking-widest">Level Selesai!</p>
+            </div>
+
+            <!-- Stars -->
+            <div id="result-stars" class="flex gap-2 text-4xl">
+                <span id="star1" class="star-anim star-delay-1 opacity-0">⭐</span>
+                <span id="star2" class="star-anim star-delay-2 opacity-0">⭐</span>
+                <span id="star3" class="star-anim star-delay-3 opacity-0">⭐</span>
+            </div>
+
+            <!-- Score Big Display -->
+            <div class="w-full glass-card rounded-3xl p-5 text-center border-pink-200 bg-white/90 shadow-xl shadow-pink-100/50">
+                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-1">Skor Akhir</p>
+                <p id="result-score-val" class="text-6xl font-black text-vibrant-pink tabular-nums score-glow">0</p>
+            </div>
+
+            <!-- Stat Cards -->
+            <div class="grid grid-cols-3 gap-3 w-full">
+                <div class="stat-card stat-delay-1 glass-card rounded-2xl p-3 text-center bg-white/80 shadow-md shadow-pink-50">
+                    <span class="material-symbols-outlined text-primary text-2xl">emoji_events</span>
+                    <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mt-1">Ronde</p>
+                    <p id="stat-rounds" class="text-xl font-black text-gray-700">3/3</p>
+                </div>
+                <div class="stat-card stat-delay-2 glass-card rounded-2xl p-3 text-center bg-white/80 shadow-md shadow-pink-50">
+                    <span class="material-symbols-outlined text-secondary text-2xl">timer</span>
+                    <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mt-1">Waktu</p>
+                    <p id="stat-time" class="text-xl font-black text-gray-700">0s</p>
+                </div>
+                <div class="stat-card stat-delay-3 glass-card rounded-2xl p-3 text-center bg-white/80 shadow-md shadow-pink-50">
+                    <span class="material-symbols-outlined text-yellow-400 text-2xl">lightbulb</span>
+                    <p class="text-[9px] font-black uppercase tracking-widest text-gray-400 mt-1">Hint</p>
+                    <p id="stat-hints" class="text-xl font-black text-gray-700">0</p>
                 </div>
             </div>
 
-            <!-- Detail Cards Group -->
-            <div class="grid grid-cols-1 gap-6 w-full">
-                <!-- Explanation Card -->
-                <div class="glass-card rounded-3xl p-6 border-pink-200 bg-white/90 shadow-xl shadow-pink-100/50">
-                    <div class="flex items-center gap-2 mb-4 border-b border-pink-100 pb-2">
-                        <span class="material-symbols-outlined text-vibrant-pink">psychology</span>
-                        <h3 class="font-black text-gray-700 uppercase text-xs tracking-widest">Cara Kerja Metode</h3>
+            <!-- Explanation Card -->
+            <div class="w-full glass-card rounded-3xl p-5 border-pink-200 bg-white/90 shadow-xl shadow-pink-100/50">
+                <div class="flex items-center gap-2 mb-3 border-b border-pink-100 pb-2">
+                    <span class="material-symbols-outlined text-vibrant-pink text-lg">psychology</span>
+                    <h3 class="font-black text-gray-700 uppercase text-[10px] tracking-widest">Cara Kerja Metode</h3>
+                </div>
+                <div id="explanation-text" class="text-gray-600 text-sm leading-relaxed space-y-3 font-medium"></div>
+            </div>
+
+            <!-- Character Unlock Banner -->
+            <div id="char-unlock-banner" class="hidden w-full glass-card rounded-3xl p-5 border-2 border-yellow-400 bg-gradient-to-r from-yellow-50 to-white shadow-xl shadow-yellow-100 flex items-center gap-4">
+                <div class="relative shrink-0">
+                    <div class="w-16 h-16 rounded-2xl overflow-hidden border-4 border-white shadow-lg">
+                        <img id="char-unlock-img" src="" alt="" class="w-full h-full object-cover">
                     </div>
-                    <div id="explanation-text" class="text-gray-600 text-sm leading-relaxed space-y-4 font-medium">
-                        <!-- Content injected -->
+                    <div class="absolute -top-2 -right-2 bg-yellow-400 text-white p-1 rounded-full shadow-lg">
+                        <span class="material-symbols-outlined text-xs">auto_awesome</span>
                     </div>
                 </div>
-
-                <!-- Character Unlock Banner -->
-                <div id="char-unlock-banner" class="hidden glass-card rounded-3xl p-6 border-2 border-yellow-400 bg-gradient-to-r from-yellow-50 to-white shadow-xl shadow-yellow-100 flex items-center gap-6 animate-fade-in">
-                    <div class="relative">
-                        <div class="w-20 h-20 shrink-0 rounded-2xl overflow-hidden border-4 border-white shadow-lg">
-                            <img id="char-unlock-img" src="" alt="" class="w-full h-full object-cover">
-                        </div>
-                        <div class="absolute -top-2 -right-2 bg-yellow-400 text-white p-1 rounded-full shadow-lg">
-                            <span class="material-symbols-outlined text-xs">auto_awesome</span>
-                        </div>
-                    </div>
-                    <div class="text-left flex-1">
-                        <p class="text-[10px] font-black uppercase tracking-widest text-yellow-600 mb-1">🎁 Karakter Baru Terbuka!</p>
-                        <h4 id="char-unlock-name" class="text-xl font-black text-gray-800">WiseOwl</h4>
-                        <p id="char-unlock-rarity" class="text-xs text-gray-500 font-bold italic"></p>
-                    </div>
+                <div class="text-left flex-1">
+                    <p class="text-[9px] font-black uppercase tracking-widest text-yellow-600 mb-0.5">🎁 Karakter Baru Terbuka!</p>
+                    <h4 id="char-unlock-name" class="text-lg font-black text-gray-800">WiseOwl</h4>
+                    <p id="char-unlock-rarity" class="text-xs text-gray-500 font-bold italic"></p>
                 </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex flex-wrap justify-center gap-4 w-full pt-4">
-                <button id="btn-next" onclick="nextLevel()" class="px-10 py-5 bg-vibrant-pink text-white font-black rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-pink-200 uppercase tracking-widest flex items-center gap-3">
-                    <span class="material-symbols-outlined">rocket_launch</span>
-                    <span>Lanjut ke Level 2</span>
+            <div class="flex flex-wrap justify-center gap-3 w-full pt-2">
+                <button id="btn-next" onclick="nextLevel()" class="flex-1 min-w-[160px] py-4 bg-vibrant-pink text-white font-black rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-pink-200 uppercase tracking-wider flex items-center justify-center gap-2 text-sm">
+                    <span class="material-symbols-outlined text-lg">rocket_launch</span>
+                    <span id="btn-next-text">Lanjut Level</span>
                 </button>
-                <button onclick="goMenu()" class="px-10 py-5 bg-white text-gray-700 font-black rounded-2xl border-2 border-gray-100 hover:bg-gray-50 active:scale-95 transition-all shadow-lg uppercase tracking-widest flex items-center gap-3">
-                    <span class="material-symbols-outlined">map</span>
-                    <span>Kembali ke Peta</span>
+                <button onclick="goMenu()" class="flex-1 min-w-[160px] py-4 bg-white text-gray-700 font-black rounded-2xl border-2 border-gray-100 hover:bg-gray-50 active:scale-95 transition-all shadow-lg uppercase tracking-wider flex items-center justify-center gap-2 text-sm">
+                    <span class="material-symbols-outlined text-lg">map</span>
+                    <span>Peta Level</span>
                 </button>
             </div>
+
         </div>
     </div>
 
@@ -877,47 +988,124 @@ function checkAnswer() {
 function showResult(won) {
     switchScreen('result');
     const cfg = CIPHER_CONFIG[state.cipherType];
-    const isSuccess = won;
-    
-    document.getElementById('result-icon').textContent = won ? '🏆' : '💀';
-    document.getElementById('result-title').textContent = won ? 'MISSION SUCCESS!' : 'MISSION FAILED';
-    document.getElementById('result-title').className = `text-5xl md:text-6xl font-black tracking-tight ${won ? 'text-vibrant-pink' : 'text-error'}`;
-    document.getElementById('result-score-val').textContent = state.score;
-    
-    document.getElementById('explanation-text').innerHTML = `
-        <p class="text-gray-700">${cfg.explain}</p>
-        <div class="p-4 bg-pink-50 rounded-2xl font-mono text-xs text-vibrant-pink border border-pink-100 shadow-inner">
-            ${cfg.formula}
-        </div>
-        <p class="text-[11px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 p-2 rounded-lg inline-block">
-            Jawaban: <span class="text-gray-800">${state.plaintext}</span>
-        </p>
-    `;
+    const levelNum = state.levelIndex + 1;
+    const screen = document.getElementById('screen-result');
 
-    const nextBtn = document.getElementById('btn-next');
-    if (won && state.levelIndex < CIPHER_ORDER.length - 1) {
-        nextBtn.classList.remove('hidden');
-        nextBtn.innerHTML = `
-            <span class="material-symbols-outlined">rocket_launch</span>
-            <span>Lanjut ke Level ${state.levelIndex + 2}</span>
-        `;
-    } else {
-        nextBtn.classList.add('hidden');
+    // Background theme
+    screen.classList.toggle('failed-bg', !won);
+
+    // Icon & title
+    document.getElementById('result-icon').textContent = won ? '🏆' : '💀';
+    const titleEl = document.getElementById('result-title');
+    titleEl.textContent = won ? 'MISSION SUCCESS!' : 'MISSION FAILED!';
+    titleEl.className = `text-4xl md:text-5xl font-black tracking-tight leading-none title-anim ${
+        won ? 'text-vibrant-pink' : 'text-error'
+    }`;
+    document.getElementById('result-subtitle').textContent = won
+        ? `Level ${levelNum} · ${cfg.level.split('·')[1]?.trim() || 'Selesai'}!`
+        : 'Jangan menyerah, coba lagi!';
+
+    // Stars (based on score thresholds)
+    const starsEl = document.getElementById('result-stars');
+    starsEl.style.display = won ? 'flex' : 'none';
+    if (won) {
+        const stars = state.score >= 1400 ? 3 : state.score >= 900 ? 2 : 1;
+        ['star1','star2','star3'].forEach((id, i) => {
+            const el = document.getElementById(id);
+            el.style.opacity = i < stars ? '1' : '0.2';
+            el.style.filter = i < stars ? 'drop-shadow(0 0 6px gold)' : 'grayscale(1)';
+        });
     }
 
-    // Show character unlock banner if a new character was earned
+    // Animated score count-up
+    const scoreEl = document.getElementById('result-score-val');
+    scoreEl.textContent = '0';
+    if (won && state.score > 0) {
+        let current = 0;
+        const target = state.score;
+        const step = Math.ceil(target / 40);
+        const interval = setInterval(() => {
+            current = Math.min(current + step, target);
+            scoreEl.textContent = current.toLocaleString('id-ID');
+            if (current >= target) clearInterval(interval);
+        }, 30);
+    } else {
+        scoreEl.textContent = state.score.toLocaleString('id-ID');
+    }
+    scoreEl.className = `text-6xl font-black tabular-nums score-glow ${
+        won ? 'text-vibrant-pink' : 'text-error'
+    }`;
+
+    // Stat cards
+    document.getElementById('stat-rounds').textContent = won ? `${state.totalRounds}/${state.totalRounds}` : `${state.round - 1}/${state.totalRounds}`;
+    document.getElementById('stat-time').textContent = state.timeLeft > 0 ? `${state.timeLeft}s` : '0s';
+    document.getElementById('stat-hints').textContent = `${3 - (state.hints - GameStorage.getHints() + state.hints) < 0 ? 0 : state.hintUsed} dipakai`;
+
+    // Explanation
+    document.getElementById('explanation-text').innerHTML = `
+        <p class="text-gray-700">${cfg.explain}</p>
+        <div class="p-3 bg-pink-50 rounded-2xl font-mono text-xs text-vibrant-pink border border-pink-100 shadow-inner">${cfg.formula}</div>
+        <div class="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-xl">
+            <span class="material-symbols-outlined text-sm text-gray-400">key</span>
+            <span class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Jawaban:</span>
+            <span class="text-sm font-black text-gray-800 font-code">${state.plaintext}</span>
+        </div>
+    `;
+
+    // Next button — always reset style & handler first
+    const nextBtn = document.getElementById('btn-next');
+    const nextBtnText = document.getElementById('btn-next-text');
+    const BASE_BTN = 'flex-1 min-w-[160px] py-4 font-black rounded-2xl active:scale-95 transition-all uppercase tracking-wider flex items-center justify-center gap-2 text-sm';
+    nextBtn.classList.remove('hidden');
+
+    if (won && state.levelIndex < CIPHER_ORDER.length - 1) {
+        nextBtn.className = BASE_BTN + ' btn-next-win text-white';
+        nextBtn.onclick = nextLevel;
+        nextBtnText.textContent = `🚀 Lanjut ke Level ${state.levelIndex + 2}`;
+    } else if (won) {
+        nextBtn.className = BASE_BTN + ' btn-next-win text-white';
+        nextBtn.onclick = goMenu;
+        nextBtnText.textContent = '🗺️ Kembali ke Peta';
+    } else {
+        nextBtn.className = BASE_BTN + ' bg-gray-700 text-white shadow-lg';
+        nextBtn.onclick = () => startGame(state.cipherType);
+        nextBtnText.textContent = '🔄 Coba Lagi';
+    }
+
+    // Character unlock banner
     const banner = document.getElementById('char-unlock-banner');
     banner.classList.add('hidden');
     if (won) {
-        const levelNum = state.levelIndex + 1;
-        const newChar = CHARACTER_CATALOG.find(c => c.unlockLevel === levelNum);
-        if (newChar) {
-            document.getElementById('char-unlock-img').src = newChar.img;
-            document.getElementById('char-unlock-name').textContent = newChar.name;
-            document.getElementById('char-unlock-rarity').textContent = newChar.rarity + ' · ' + newChar.desc;
-            banner.classList.remove('hidden');
-        }
+        try {
+            const newChar = CHARACTER_CATALOG.find(c => c.unlockLevel === levelNum);
+            if (newChar) {
+                document.getElementById('char-unlock-img').src = newChar.img;
+                document.getElementById('char-unlock-name').textContent = newChar.name;
+                document.getElementById('char-unlock-rarity').textContent = newChar.rarity + ' · ' + newChar.desc;
+                banner.classList.remove('hidden');
+            }
+        } catch(e) {}
+        launchConfetti();
     }
+}
+
+function launchConfetti() {
+    const container = document.getElementById('confetti-container');
+    container.innerHTML = '';
+    const colors = ['#FF85A1','#FFD1DC','#72DDF7','#B588F7','#FFD700','#FF6B6B','#4ECDC4','#fff'];
+    for (let i = 0; i < 80; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const left   = Math.random() * 100;
+        const delay  = Math.random() * 1.2;
+        const dur    = 2.5 + Math.random() * 2;
+        const size   = 6 + Math.random() * 10;
+        const rotate = Math.random() * 360;
+        piece.style.cssText = `left:${left}%;background:${color};width:${size}px;height:${size * 1.4}px;animation-duration:${dur}s;animation-delay:${delay}s;transform:rotate(${rotate}deg);border-radius:${Math.random()>0.5?'50%':'2px'};`;
+        container.appendChild(piece);
+    }
+    setTimeout(() => { container.innerHTML = ''; }, 5000);
 }
 
 function nextLevel() {
