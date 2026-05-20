@@ -1,0 +1,14 @@
+Options -Indexes
+
+<FilesMatch "^(config|config\.local|db_manga)\.(php|sql)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^storage/encrypted/ - [F,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GhostMark — Welcome</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #010204;
+      --surface-glass: rgba(10, 14, 22, 0.55);
+      --border: rgba(255, 255, 255, 0.08);
+      --accent-cyan: #00F0FF;
+      --accent-magenta: #FF0055;
+      --text: #F0F2F5;
+      --muted: #828B9E;
+      --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.15);
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background-color: var(--bg);
+      background-image: url('static/assets/images/hero-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 30%, rgba(0, 240, 255, 0.06), transparent 60%), rgba(0, 0, 0, 0.75);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url('static/assets/images/noise.jpg'),
+        linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+      background-size: cover, 40px 40px, 40px 40px;
+      background-position: center, 0, 0;
+      background-repeat: no-repeat, repeat, repeat;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes fadeUp {
+      0%   { opacity: 0; transform: translateY(20px); filter: blur(6px); }
+      100% { opacity: 1; transform: translateY(0);    filter: blur(0); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: inset 0 0 30px rgba(0, 240, 255, 0.08), 0 0 20px rgba(0, 240, 255, 0.08); }
+      50%       { box-shadow: inset 0 0 40px rgba(0, 240, 255, 0.2),  0 0 35px rgba(0, 240, 255, 0.18); }
+    }
+
+    /* ── Main card ── */
+    .welcome-card {
+      position: relative;
+      z-index: 1;
+      width: min(960px, 94vw);
+      background: var(--surface-glass);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 72px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+      animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      opacity: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .welcome-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.35), transparent);
+      border-radius: 24px 24px 0 0;
+    }
+
+    /* ── Logo: ghost.jpg + GhostMark in one box ── */
+    .logo-row {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 18px;
+      overflow: hidden;
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    .logo-img {
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      display: block;
+      flex-shrink: 0;
+      filter: brightness(0.9) contrast(1.1);
+    }
+
+    .logo-text-block {
+      padding: 0 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+    }
+
+    .logo-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 46px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #fff;
+      text-transform: uppercase;
+      text-shadow:
+        4px 0 10px rgba(255, 0, 85, 0.8),
+        -4px 0 10px rgba(0, 240, 255, 0.8),
+        0 0 20px rgba(255, 255, 255, 0.2);
+      line-height: 1;
+      cursor: default;
+      transition: letter-spacing 0.4s ease, text-shadow 0.4s ease;
+    }
+
+    .logo-name:hover {
+      letter-spacing: 6px;
+      text-shadow:
+        8px 0 18px rgba(255, 0, 85, 1),
+        -8px 0 18px rgba(0, 240, 255, 1),
+        0 0 30px rgba(255, 255, 255, 0.5);
+    }
+
+    .logo-tagline {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── Divider ── */
+    .h-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2), transparent);
+    }
+
+    /* ── Description ── */
+    .desc-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      line-height: 1.9;
+      color: rgba(240, 242, 245, 0.72);
+      max-width: 560px;
+    }
+
+    .desc-text strong { color: var(--accent-cyan); font-weight: 700; }
+
+    /* ── Creators — horizontal, no hover animation ── */
+    .creators-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .creators-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .creators-label::before, .creators-label::after {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.3), transparent);
+    }
+
+    .creators-grid {
+      display: flex;
+      gap: 14px;
+    }
+
+    .creator-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 20px;
+    }
+
+    .creator-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .creator-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .creator-info { display: flex; flex-direction: column; gap: 2px; text-align: left; }
+
+    .creator-role {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      opacity: 0.8;
+    }
+
+    .creator-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* ── CTA Button ── */
+    .btn-enter {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px 72px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #fff;
+      text-decoration: none;
+      border: 1px solid rgba(0, 240, 255, 0.45);
+      border-radius: 12px;
+      background: rgba(0, 240, 255, 0.06);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 240, 255, 0.06);
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-enter::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .btn-enter:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 240, 255, 0.13);
+      box-shadow: 0 10px 32px rgba(0,0,0,0.6), inset 0 0 24px rgba(0, 240, 255, 0.2), var(--glow-cyan);
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+      transform: translateY(-3px);
+    }
+
+    .btn-enter:hover::before { transform: translateX(100%); }
+    .btn-enter:active { transform: translateY(1px); }
+
+    .btn-arrow { font-size: 18px; transition: transform 0.3s ease; }
+    .btn-enter:hover .btn-arrow { transform: translateX(5px); }
+
+    /* ── Copyright ── */
+    .footer-stamp {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      .welcome-card { padding: 28px 20px; gap: 24px; }
+      .logo-name { font-size: 30px; }
+      .logo-img { width: 80px; height: 80px; }
+      .logo-text-block { padding: 0 20px; }
+      .creators-grid { flex-direction: column; align-items: center; }
+      .btn-enter { padding: 18px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="welcome-card">
+
+    <!-- Logo: ghost.jpg + GhostMark text in one unified box -->
+    <div class="logo-row">
+      <img class="logo-img" src="{{ url_for('static', filename='assets/images/ghost.jpg') }}" alt="GhostMark"/>
+      <div class="logo-text-block">
+        <div class="logo-name">GhostMark</div>
+        <p class="logo-tagline">Image Steganography &amp; AES Encryption</p>
+      </div>
+    </div>
+
+    <div class="h-divider"></div>
+
+    <!-- Description -->
+    <p class="desc-text">
+      Sembunyikan pesan rahasia di dalam gambar menggunakan enkripsi <strong>AES-CBC</strong>
+      dan teknik <strong>DCT Steganography</strong>. Tak terlihat mata — hanya bisa dibaca dengan <strong>key</strong> yang benar.
+    </p>
+
+    <!-- CTA Button (cdcentered) -->
+    <a href="/app" class="btn-enter">
+      Mulai Sekarang
+      <span class="btn-arrow">→</span>
+    </a>
+
+    <!-- Creators -->
+    <div class="creators-wrap">
+      <div class="creators-label">Dibuat oleh</div>
+      <div class="creators-grid">
+        <div class="creator-chip">
+          <div class="creator-avatar">
+            <img src="{{ url_for('static', filename='assets/images/ghost.jpg') }}" alt="Elaine Keisha"/>
+          </div>
+          <div class="creator-info">
+            <span class="creator-role">Creator</span>
+            <span class="creator-name">Elaine Keisha</span>
+          </div>
+        </div>
+        <div class="creator-chip">
+          <div class="creator-avatar">
+            <img src="{{ url_for('static', filename='assets/images/ghost.jpg') }} " alt="Vaidon Shello"/>
+          </div>
+          <div class="creator-info">
+            <span class="creator-role">Creator</span>
+            <span class="creator-name">Vaidon Shello</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <p class="footer-stamp">© 2026 GhostMark Steganography</p>
+
+  </div>
+
+</body>
+</html>

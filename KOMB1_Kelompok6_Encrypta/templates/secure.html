@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Encrypta Secure Files</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --primary:#00c896;
+    --secondary:#00e0a4;
+}
+
+body{
+    font-family:'Inter', sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(0,200,150,0.15), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(0,255,170,0.12), transparent 30%),
+        linear-gradient(135deg,#06110d,#081712,#0c241d);
+    min-height:100vh;
+    color:white;
+}
+
+.container{
+    max-width:1300px;
+    margin:auto;
+    padding:70px 7%;
+}
+
+.section-title{
+    text-align:center;
+    margin-bottom:60px;
+}
+
+.section-title h2{
+    font-size:48px;
+    margin-bottom:15px;
+}
+
+.section-title p{
+    color:#c7d9d2;
+    line-height:1.8;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+    gap:30px;
+}
+
+.card{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:30px;
+    padding:35px;
+    backdrop-filter:blur(18px);
+}
+
+.card-icon{
+    width:80px;
+    height:80px;
+    border-radius:24px;
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:34px;
+    margin-bottom:25px;
+}
+
+.card h3{
+    font-size:28px;
+    margin-bottom:12px;
+}
+
+.card p{
+    color:#c5d8d0;
+    line-height:1.8;
+    margin-bottom:25px;
+}
+
+input[type="file"],
+input[type="password"]{
+    width:100%;
+    padding:17px;
+    border:none;
+    border-radius:16px;
+    background:rgba(255,255,255,0.06);
+    color:white;
+    margin-bottom:18px;
+    outline:none;
+    font-size:15px;
+}
+
+button{
+    width:100%;
+    border:none;
+    padding:17px;
+    border-radius:18px;
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.encrypt-btn{
+    background:linear-gradient(135deg,#00c896,#00e0a4);
+}
+
+.decrypt-btn{
+    background:linear-gradient(135deg,#0fbf9f,#16d6b0);
+}
+
+.features{
+    margin-top:80px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:25px;
+}
+
+.feature-box{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    padding:30px;
+    border-radius:24px;
+}
+
+.feature-box h4{
+    margin-bottom:12px;
+}
+
+.feature-box p{
+    color:#c7d9d2;
+    line-height:1.8;
+    font-size:14px;
+}
+
+footer{
+    text-align:center;
+    padding:40px 20px;
+    color:#bfd2ca;
+    font-size:14px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="section-title">
+
+        <h2>Secure Your Files</h2>
+
+        <p>
+            Encrypt and decrypt documents with a professional secure interface.
+        </p>
+
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div class="card-icon">🛡️</div>
+
+            <h3>Encrypt File</h3>
+
+            <p>
+                Secure your files with advanced encryption technology.
+            </p>
+
+            <form action="/process" method="POST" enctype="multipart/form-data">
+
+                <input type="file" name="file" required>
+
+                <input 
+                    type="password" 
+                    name="password" 
+                    placeholder="Enter secure password"
+                    required
+                >
+
+                <button 
+                    type="submit"
+                    name="action"
+                    value="encrypt"
+                    class="encrypt-btn"
+                >
+                    Encrypt Now
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-icon">🔓</div>
+
+            <h3>Decrypt File</h3>
+
+            <p>
+                Restore encrypted files back into original format.
+            </p>
+
+            <form action="/process" method="POST" enctype="multipart/form-data">
+
+                <input type="file" name="file" required>
+
+                <input 
+                    type="password"
+                    name="password"
+                    id="decryptPassword"
+                    placeholder="Enter decryption password"
+                    required
+                >
+
+                <button 
+                    type="submit"
+                    name="action"
+                    value="decrypt"
+                    class="decrypt-btn"
+                >
+                    Decrypt File
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="features">
+
+        <div class="feature-box">
+            <h4>🔒 High Security</h4>
+            <p>Enterprise-grade encryption system.</p>
+        </div>
+
+        <div class="feature-box">
+            <h4>⚡ Fast Performance</h4>
+            <p>Quick encryption and decryption process.</p>
+        </div>
+
+        <div class="feature-box">
+            <h4>📂 Multi Format</h4>
+            <p>Supports PDF, Word, Excel, ZIP, and more.</p>
+        </div>
+
+        <div class="feature-box">
+            <h4>🛡 Privacy Safe</h4>
+            <p>Your files remain secure and protected.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<footer>
+    © 2026 Encrypta • Professional Secure File Encryption Platform
+</footer>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+
+if(params.get("error") === "wrongkey"){
+
+    const input = document.getElementById("decryptPassword");
+
+    input.setCustomValidity("The key is wrong");
+
+    input.reportValidity();
+
+    input.addEventListener("input", () => {
+        input.setCustomValidity("");
+    });
+
+}
+
+</script>
+
+</body>
+</html>

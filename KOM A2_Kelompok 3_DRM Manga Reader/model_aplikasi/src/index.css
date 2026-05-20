@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Inter:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-pastel-pink: var(--theme-pink);
+  --color-pastel-purple: var(--theme-purple);
+  --color-pastel-blue: var(--theme-blue);
+  --color-pastel-green: var(--theme-green);
+  --color-pastel-orange: var(--theme-orange);
+  --color-pastel-yellow: var(--theme-yellow);
+  --color-pastel-bg: var(--theme-bg);
+  --color-pastel-cardbg: var(--theme-cardbg);
+  --color-pastel-light: var(--theme-light);
+  --color-pastel-border: var(--theme-border);
+  --color-pastel-text: var(--theme-text);
+  --color-pastel-heading: var(--theme-heading);
+  --color-pastel-muted: var(--theme-muted);
+  --color-pastel-detailbg: var(--theme-detailbg);
+  --color-pastel-detailtext: var(--theme-detailtext);
+}
+
+:root {
+  --theme-pink: #E0BBE4;
+  --theme-purple: #F0E1FF;
+  --theme-blue: #D4F0F0;
+  --theme-green: #D1FFD7;
+  --theme-orange: #FFDFD3;
+  --theme-yellow: #FFF9C4;
+  --theme-bg: #FFF9F9;
+  --theme-cardbg: #FFFCFC;
+  --theme-light: #FDF0F0;
+  --theme-border: #F0E4E4;
+  --theme-text: #4A4A4A;
+  --theme-heading: #6D5D6E;
+  --theme-muted: #A8A29E;
+  --theme-detailbg: #E0BBE4;
+  --theme-detailtext: #ffffff;
+}
+
+.dark {
+  --theme-pink: #C599C9;
+  --theme-purple: #A488D9;
+  --theme-blue: #7CA1A1;
+  --theme-green: #83AC89;
+  --theme-orange: #C98875;
+  --theme-yellow: #BFB75A;
+  --theme-bg: #1A1A24;         
+  --theme-cardbg: #232332;     
+  --theme-light: #2D2D44;      
+  --theme-border: #3A3A52;     
+  --theme-text: #B4B4C7;       
+  --theme-heading: #E8E8F2;    
+  --theme-muted: #8A8A9E;      
+  --theme-detailbg: #1C1C24;
+  --theme-detailtext: #E8E8F2;
+}
+
+body {
+  background-color: var(--color-pastel-bg);
+  color: var(--color-pastel-text);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pastel-card {
+  @apply bg-pastel-cardbg rounded-3xl shadow-sm border border-pastel-border;
+}
+
+.bottom-nav-blur {
+  @apply bg-white border-t border-pastel-border;
+}
+
+/* Custom scrollbar for mobile feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-pastel-pink);
+  border-radius: 10px;
+}
+
+/* Chapter list gradient fade */
+.chapter-scroll-fade {
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
