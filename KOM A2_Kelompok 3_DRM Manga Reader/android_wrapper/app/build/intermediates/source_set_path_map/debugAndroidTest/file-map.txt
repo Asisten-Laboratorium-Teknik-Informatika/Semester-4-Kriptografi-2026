@@ -1,0 +1,4 @@
+com.example.drmreader.test.app-androidTest-0 C:\projek kripto\android_wrapper\app\build\generated\res\resValues\androidTest\debug
+com.example.drmreader.test.app-mergeDebugAndroidTestResources-1 C:\projek kripto\android_wrapper\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.example.drmreader.test.app-mergeDebugAndroidTestResources-2 C:\projek kripto\android_wrapper\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.example.drmreader.test.app-merged_res-3 C:\projek kripto\android_wrapper\app\build\intermediates\merged_res\debugAndroidTest

@@ -1,0 +1,120 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/config.php';
+
+header('Content-Type: application/json; charset=utf-8');
+apply_cors_headers();
+
+try {
+    ensure_storage_dirs();
+
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        http_response_code(204);
+        exit;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        fail('POST required.', 405);
+    }
+
+    $token = $_SERVER['HTTP_X_ADMIN_TOKEN'] ?? ($_POST['admin_token'] ?? '');
+    if (!hash_equals(ADMIN_UPLOAD_TOKEN, (string) $token)) {
+        fail('Invalid admin token.', 403);
+    }
+
+    $comicId = (int) ($_POST['comic_id'] ?? 0);
+    $chapterNumber = (float) ($_POST['chapter_number'] ?? 1);
+    $chapterTitle = trim((string) ($_POST['chapter_title'] ?? 'Chapter ' . $chapterNumber));
+
+    if ($comicId <= 0) {
+        fail('Comic ID is required.');
+    }
+    if (!isset($_FILES['pages']) || !is_array($_FILES['pages']['tmp_name'])) {
+        fail('At least one page image is required.');
+    }
+
+    $pdo = pdo();
+    $pdo->beginTransaction();
+
+    // Verify comic exists
+    $stmt = $pdo->prepare('SELECT id FROM comics WHERE id = :id');
+    $stmt->execute([':id' => $comicId]);
+    if (!$stmt->fetch()) {
+        fail('Comic not found.');
+    }
+
+    $stmt = $pdo->prepare('INSERT INTO chapters (comic_id, number, title) VALUES (:comic_id, :number, :title)');
+    $stmt->execute([':comic_id' => $comicId, ':number' => $chapterNumber, ':title' => $chapterTitle]);
+    $chapterId = (int) $pdo->lastInsertId();
+
+    $pageCount = count($_FILES['pages']['tmp_name']);
+    for ($i = 0; $i < $pageCount; $i++) {
+        if (!is_uploaded_file($_FILES['pages']['tmp_name'][$i])) {
+            continue;
+        }
+        encrypt_page_upload_chapter($_FILES['pages'], $i, $chapterId, $i);
+    }
+
+    // Update comic's updated_at
+    $pdo->prepare('UPDATE comics SET updated_at = CURRENT_TIMESTAMP WHERE id = :id')->execute([':id' => $comicId]);
+
+    $pdo->commit();
+    ok([
+        'chapterId' => (string) $chapterId,
+        'pageCount' => $pageCount,
+    ]);
+} catch (Throwable $e) {
+    if (pdo()->inTransaction()) pdo()->rollBack();
+    error_log($e->getMessage());
+    fail('Add chapter failed.', 500);
+}
+
+function detect_upload_mime_chapter(string $tmpName): string
+{
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime = $finfo->file($tmpName);
+    if (!in_array($mime, ['image/jpeg', 'image/png', 'image/webp'], true)) {
+        fail('Only JPEG, PNG, and WEBP images are allowed.');
+    }
+    return $mime;
+}
+
+function encrypt_page_upload_chapter(array $files, int $fileIndex, int $chapterId, int $pageIndex): void
+{
+    $tmpName = $files['tmp_name'][$fileIndex];
+    $mime = detect_upload_mime_chapter($tmpName);
+    $plain = file_get_contents($tmpName);
+    if ($plain === false) fail('Unable to read uploaded page.');
+
+    $key = random_bytes(32);
+    $iv = random_bytes(16);
+    $cipher = openssl_encrypt($plain, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
+    if ($cipher === false) fail('Page encryption failed.');
+
+    $dir = ENCRYPTED_DIR . '/chapter-' . $chapterId;
+    if (!is_dir($dir) && !mkdir($dir, 0750, true) && !is_dir($dir)) {
+        fail('Unable to create chapter storage.');
+    }
+
+    $fileName = 'page-' . str_pad((string) $pageIndex, 4, '0', STR_PAD_LEFT) . '-' . bin2hex(random_bytes(8)) . '.bin';
+    $absolutePath = $dir . '/' . $fileName;
+    if (file_put_contents($absolutePath, $cipher, LOCK_EX) === false) {
+        fail('Unable to write encrypted page.');
+    }
+
+    $relativePath = 'storage/encrypted/chapter-' . $chapterId . '/' . $fileName;
+    $stmt = pdo()->prepare('INSERT INTO chapter_pages
+        (chapter_id, page_index, encrypted_path, mime_type, byte_size, sha256, key_base64, iv_base64)
+        VALUES (:chapter_id, :page_index, :encrypted_path, :mime_type, :byte_size, :sha256, :key_base64, :iv_base64)');
+    $stmt->execute([
+        ':chapter_id' => $chapterId,
+        ':page_index' => $pageIndex,
+        ':encrypted_path' => $relativePath,
+        ':mime_type' => $mime,
+        ':byte_size' => strlen($cipher),
+        ':sha256' => hash('sha256', $cipher),
+        ':key_base64' => base64_encode($key),
+        ':iv_base64' => base64_encode($iv),
+    ]);
+}
